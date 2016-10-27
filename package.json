@@ -15,7 +15,8 @@
   "license": "CC0-1.0",
   "dependencies": {
     "concat-stream": "^1.5.2",
-    "nunjucks": "^2.5.2"
+    "nunjucks": "^2.5.2",
+    "yargs": "^6.3.0"
   },
   "devDependencies": {
     "mocha": "^3.1.2"
