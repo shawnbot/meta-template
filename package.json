@@ -1,0 +1,20 @@
+{
+  "name": "meta-template",
+  "version": "0.1.0",
+  "description": "Transform Nunjucks templates into other formats",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "template",
+    "nunjucks",
+    "transform"
+  ],
+  "author": "Shawn Allen (https://github.com/shawnbot)",
+  "license": "CC0-1.0",
+  "dependencies": {
+    "concat-stream": "^1.5.2",
+    "nunjucks": "^2.5.2"
+  }
+}
