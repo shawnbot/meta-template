@@ -1,6 +1,6 @@
 'use strict';
 const assert = require('assert');
-const ast = require('../src/ast');
+const ast = require('../ast');
 
 describe('AST functions', function() {
 

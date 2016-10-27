@@ -1,6 +1,6 @@
 'use strict';
 const parser = require('nunjucks/src/parser');
-const ast = require('./ast');
+const ast = require('../ast');
 
 const parseString = str => {
   return ast.normalize(parser.parse(str));

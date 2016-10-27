@@ -1,7 +1,7 @@
 'use strict';
 const assert = require('assert');
-const parse = require('../src/parse');
-const format = require('../src/format');
+const parse = require('../parse');
+const format = require('../format');
 
 const assertFormats = (fmt, templates) => {
   templates.forEach(template => {
