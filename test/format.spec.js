@@ -22,6 +22,14 @@ describe('default format (nunjucks -> nunjucks)', function() {
     ]);
   });
 
+  describe('formats filter tags', function() {
+    assertFormats(format(), [
+      "foo {{ bar | qux }} baz",
+      "foo {{ bar | qux(1) }} baz",
+      "foo {{ bar | qux(1, 'quux', bar.baz[0]) }} baz",
+    ]);
+  });
+
   describe('formats for..in loops', function() {
     assertFormats(format(), [
       "{% for x in items %}la {{ x[0] }}{% endfor %}",
