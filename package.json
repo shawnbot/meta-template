@@ -4,7 +4,7 @@
   "description": "Transform Nunjucks templates into other formats",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha test/**/*.spec.js"
   },
   "keywords": [
     "template",
