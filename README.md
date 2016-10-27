@@ -29,5 +29,7 @@ This project is in its infancy, but here is a very rough roadmap:
 [Jinja]: http://jinja.pocoo.org/
 [EJS]: http://www.embeddedjs.com/
 [ERB]: https://docs.puppet.com/puppet/latest/reference/lang_template_erb.html
+[Liquid]: https://shopify.github.io/liquid/
+[Mustache]: https://mustache.github.io/
 [parse templates]: src/parse.js
 [basic formatter]: src/format.js
