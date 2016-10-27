@@ -10,7 +10,8 @@ such as [EJS], [ERB], and [Mustache].
 ## Roadmap
 This project is in its infancy, but here is a very rough roadmap:
 
-- [x] [Parse templates] into a Nunjucks-specific abstract syntax tree (AST)
+- [x] Adapt the Nunjucks parser to [parse templates] into an abstract syntax
+  tree (AST)
 - [x] Write a [basic formatter] that can transform AST nodes back into
   Nunjucks template strings
 - [ ] Do some research on template engine popularity in order to prioritize
