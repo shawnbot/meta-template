@@ -1,16 +1,20 @@
 #!/usr/bin/env node
 'use strict';
 
+const yargs = require('yargs');
+const options = yargs
+  .argv;
+const args = options._;
+
 const concat = require('concat-stream');
-const parse = require('../src/parse');
+const parse = require('../parse');
 
 var format = node => JSON.stringify(node, null, '  ');
 
-const args = process.argv.slice(2);
-
-if (args[0] === '--format') {
-  format = require('../src/format')();
-  args.shift();
+if (options.format) {
+  format = options.format === true
+    ? require('../format')()
+    : require('../format/' + options.format);
 }
 
 if (args.length) {
