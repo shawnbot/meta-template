@@ -8,6 +8,25 @@ the source of truth and programmatically transform them into other formats
 (such as [EJS], [ERB], and [Mustache]) and even [PHP], which is basically a
 templating language in and of itself.
 
+## Play with it!
+Currently I'm experimenting with different output formats, starting with
+[Liquid] and [PHP][] (which seemed to me the most potentially difficult). You
+can test these out by cloning the repo, running `npm install` to get the
+dependencies, then running the [bin/parse.js](bin/parse.js) script, e.g.:
+
+```sh
+# output the Nunjucks AST in JSON format
+./bin/parse.js path/to/template.html
+# or use stdin
+echo 'foo {{ bar }} baz {% if x %}hi{% endif %}' | ./bin/parse.js
+# reformat the AST as Nunjucks (this _should_ produce the same output)
+echo 'foo {{ bar }} baz...' | ./bin/parse.js --format
+# reformat as Liquid
+echo 'foo {{ bar }} baz...' | ./bin/parse.js --format liquid
+# reformat as PHP!
+echo 'foo {{ bar }} baz...' | ./bin/parse.js --format php
+```
+
 ## Roadmap
 This project is in its infancy, but here is a very rough roadmap:
 
