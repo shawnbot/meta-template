@@ -83,6 +83,20 @@ const Compare = function(node) {
   ].join(' ');
 };
 
+const Filter = function(node) {
+  var args = node.args.children;
+  return [
+    this.node(args[0]),
+    ' | ',
+    this.node(node.name),
+    args.length > 1
+      ? '(' + args.slice(1)
+          .map(arg => this.node(arg))
+          .join(', ') + ')'
+      : ''
+  ].join('');
+};
+
 const quote = function(symbol, force) {
   if (PATTERN_NUMERIC.test(symbol)) {
     return symbol;
@@ -100,6 +114,7 @@ const DEFAULT_FORMATTERS = {
   quote:        quote,
   Compare:      Compare,
   If:           If,
+  Filter:       Filter,
   For:          For,
   Literal:      Literal,
   LookupVal:    LookupVal,
@@ -123,7 +138,7 @@ const factory = (formatters) => {
       case 'function':
         return format.call(formats, node, parent);
       default:
-        throw new Error('Unexpected node type formatter for "' + node.type + '"');
+        throw new Error('Unsupported node type found: "' + node.type + '"');
     }
   };
 
