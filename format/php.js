@@ -42,7 +42,7 @@ const LookupVal = function(node) {
     stack.unshift(target.val.value);
     target = target.target;
   }
-  return stack.reduce((str, symbol) => {
+  return this.VAR_PREFIX + stack.reduce((str, symbol) => {
     var out = this.quote(symbol, true);
     return str + '[' + out + ']';
   }, target.value);
@@ -52,17 +52,19 @@ const Literal = function(node) {
   return this.quote(node.value, true);
 };
 
-const Output = function(node) {
+const Output = function(node, parent) {
   return node.children.map(child => {
-    var out = this.node(child, node);
+    const out = this.node(child, parent);
     return child.type === 'TemplateData'
       ? out
-      : [this.VAR_START, ' ', this.VAR_PREFIX, out, ' ', this.VAR_END].join('');
+      : [this.VAR_START, ' ', out, ' ', this.VAR_END].join('');
   }).join('');
 };
 
-const NodeList = function(node) {
-  return node.children.map(child => this.node(child)).join('');
+const NodeList = function(node, parent) {
+  return node.children.map(child => {
+    return this.node(child, parent);
+  }).join('');
 };
 
 const TemplateData = function(node) {
@@ -70,12 +72,15 @@ const TemplateData = function(node) {
 };
 
 const Symbol = function(node, parent) {
-  return node.value;
+  const prefix = parent && parent.type === 'Filter'
+    ? ''
+    : this.VAR_PREFIX;
+  return prefix + node.value;
 };
 
 const Compare = function(node) {
   return [
-    this.VAR_PREFIX + this.node(node.expr),
+    this.node(node.expr, node),
     node.ops[0].type,
     this.node(node.ops[0].expr, node)
   ].join(' ');
@@ -84,14 +89,10 @@ const Compare = function(node) {
 const Filter = function(node) {
   var args = node.args.children;
   return [
-    this.node(args[0]),
-    ' | ',
-    this.node(node.name),
-    args.length > 1
-      ? '(' + args.slice(1)
-          .map(arg => this.node(arg))
-          .join(', ') + ')'
-      : ''
+    this.node(node.name, node),
+    '(',
+    args.map(arg => this.node(arg, node)).join(', '),
+    ')'
   ].join('');
 };
 
