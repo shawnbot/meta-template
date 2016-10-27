@@ -1,7 +1,7 @@
 'use strict';
-const format = require('./');
+const nunjucks = require('./nunjucks');
 
-module.exports = format({
+const nodes = {
   Filter: function(node) {
     var args = node.args.children;
     return [
@@ -15,4 +15,12 @@ module.exports = format({
         : ''
     ].join('');
   }
-});
+};
+
+module.exports = function(overrides) {
+  return nunjucks.extend(Object.assign(
+    {},
+    nodes,
+    overrides
+  ));
+};
