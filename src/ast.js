@@ -2,6 +2,7 @@
 const nodes = require('nunjucks/src/nodes');
 
 const NODE_KEYS = [
+  'args',
   'arr',
   'body',
   'cond',
@@ -10,6 +11,11 @@ const NODE_KEYS = [
   'name',
   'target',
   'val',
+];
+
+const CHILD_KEYS = [
+  'children',
+  'ops',
 ];
 
 const NODE_NAMES = Object.keys(nodes);
@@ -38,13 +44,11 @@ const normalize = (node) => {
 const walk = (node, func) => {
   if (func(node) !== false) {
 
-    if (Array.isArray(node.children)) {
-      node.children.forEach(child => walk(child, func));
-    }
-
-    if (Array.isArray(node.ops)) {
-      node.ops.forEach(op => walk(op, func));
-    }
+    CHILD_KEYS
+      .filter(key => Array.isArray(node[key]))
+      .forEach(key => {
+        node[key].forEach(child => walk(child, func));
+      });
 
     NODE_KEYS
       .filter(key => node[key])
