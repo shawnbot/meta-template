@@ -8,24 +8,25 @@ const args = options._;
 
 const concat = require('concat-stream');
 const parse = require('../parse');
+const format = require('../format');
 
-var format = node => JSON.stringify(node, null, '  ');
+var fmt = node => JSON.stringify(node, null, '  ');
 
 if (options.format) {
-  format = options.format === true
-    ? require('../format')()
-    : require('../format/' + options.format);
+  fmt = options.format === true
+    ? format.defaultFormat
+    : format.get(options.format);
 }
 
 if (args.length) {
   args.forEach(filename => {
     parse.file(filename, (error, node) => {
-      console.log(filename, '=>\n', format(ast));
+      console.log(filename, '=>\n', fmt(ast));
     });
   });
 } else {
   process.stdin.pipe(concat(buffer => {
     const node = parse.buffer(buffer);
-    console.log(format(node));
+    console.log(fmt(node));
   }));
 }
