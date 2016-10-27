@@ -1,7 +1,9 @@
 'use strict';
 const nunjucks = require('./nunjucks');
 
-const nodes = {
+module.exports = nunjucks.extend({
+  // Nunjucks/Jinja: {{ foo | bar(baz, 1) }}
+  // Liquid: {{ foo | bar: baz, 1 }}
   Filter: function(node) {
     var args = node.args.children;
     return [
@@ -15,12 +17,4 @@ const nodes = {
         : ''
     ].join('');
   }
-};
-
-module.exports = function(overrides) {
-  return nunjucks.extend(Object.assign(
-    {},
-    nodes,
-    overrides
-  ));
-};
+});

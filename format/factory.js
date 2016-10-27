@@ -18,7 +18,7 @@ const factory = (formatters) => {
 
   formats.node = formatNode;
 
-  formats.extend = function(overrides) {
+  formatNode.extend = function(overrides) {
     return factory(Object.assign(
       {},
       formatters,
