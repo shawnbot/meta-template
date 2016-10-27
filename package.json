@@ -16,5 +16,8 @@
   "dependencies": {
     "concat-stream": "^1.5.2",
     "nunjucks": "^2.5.2"
+  },
+  "devDependencies": {
+    "mocha": "^3.1.2"
   }
 }

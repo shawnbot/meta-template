@@ -1,21 +1,20 @@
 'use strict';
 const assert = require('assert');
 
+const PATTERN_NUMERIC = /^\d+(\.\d+)?$/;
+const PATTERN_WORD = /^[a-z]\w*$/i;
+
 const If = function(node) {
   const parts = [
     this.CTRL_START, ' if ', this.node(node.cond), ' ', this.CTRL_END,
     this.node(node.body)
   ];
   if (node.else_) {
-    if (node.else_.cond) {
-      parts.push(
-        this.CTRL_START, ' elseif ',
-        this.node(node.else_.cond), ' ', this.CTRL_END
-      );
-    } else {
-      parts.push(this.CTRL_START, ' else ', this.CTRL_END);
-    }
-    parts.push(this.node(node.else_.body));
+    // TODO: produce elseif expressions, rather than nested if/else
+    parts.push(
+      this.CTRL_START, ' else ', this.CTRL_END,
+      this.node(node.else_)
+    );
   }
   return parts.concat([
     this.CTRL_START, ' endif ', this.CTRL_END
@@ -44,15 +43,15 @@ const LookupVal = function(node) {
     target = target.target;
   }
   return stack.reduce((str, symbol) => {
-    var out = this.node({type: 'Literal', value: symbol});
-    return str + (/^\w/.test(out) ? '.' : '') + out;
+    var out = this.quote(symbol);
+    return /^[0-9'"]/.test(out)
+      ? str + '[' + out + ']'
+      : str + '.' + out;
   }, target.value);
 };
 
 const Literal = function(node) {
-  return /^\w+$/.test(node.value)
-    ? node.value
-    : "['" + node.value + "']";
+  return this.quote(node.value, true);
 };
 
 const Output = function(node) {
@@ -76,11 +75,30 @@ const Symbol = function(node, parent) {
   return node.value;
 };
 
+const Compare = function(node) {
+  return [
+    this.node(node.expr),
+    node.ops[0].type,
+    this.node(node.ops[0].expr, node)
+  ].join(' ');
+};
+
+const quote = function(symbol, force) {
+  if (PATTERN_NUMERIC.test(symbol)) {
+    return symbol;
+  }
+  return (!force && PATTERN_WORD.test(symbol))
+    ? symbol
+    : "'" + symbol.replace(/'/g, "\\'") + "'";
+};
+
 const DEFAULT_FORMATTERS = {
   CTRL_START:   '{%',
   CTRL_END:     '%}',
   VAR_START:    '{{',
   VAR_END:      '}}',
+  quote:        quote,
+  Compare:      Compare,
   If:           If,
   For:          For,
   Literal:      Literal,
@@ -93,13 +111,19 @@ const DEFAULT_FORMATTERS = {
 };
 
 const factory = (formatters) => {
-  const formats = Object.assign({}, DEFAULT_FORMATTERS, formatters);
+  const formats = Object.assign(
+    {},
+    DEFAULT_FORMATTERS,
+    formatters
+  );
 
   const formatNode = function(node, parent) {
     var format = formats[node.type];
     switch (typeof format) {
       case 'function':
         return format.call(formats, node, parent);
+      default:
+        throw new Error('Unexpected node type formatter for "' + node.type + '"');
     }
   };
 

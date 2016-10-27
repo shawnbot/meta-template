@@ -5,6 +5,7 @@ const NODE_KEYS = [
   'arr',
   'body',
   'cond',
+  'expr',
   'else_',
   'name',
   'target',
@@ -15,17 +16,17 @@ const NODE_NAMES = Object.keys(nodes);
 
 const getNodeType = (node) => {
   var type;
-  NODE_NAMES.some((name) => {
+  return node.type || (NODE_NAMES.some((name) => {
     if (node.constructor === nodes[name]) {
       return type = name;
     }
-  });
-  return type;
+  }), type);
 };
 
 const _normalize = (node) => {
   delete node.lineno;
   delete node.colno;
+  delete node.parent;
   node.type = getNodeType(node);
   return node;
 };
@@ -39,6 +40,10 @@ const walk = (node, func) => {
 
     if (Array.isArray(node.children)) {
       node.children.forEach(child => walk(child, func));
+    }
+
+    if (Array.isArray(node.ops)) {
+      node.ops.forEach(op => walk(op, func));
     }
 
     NODE_KEYS
