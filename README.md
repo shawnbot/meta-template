@@ -5,8 +5,8 @@ to solve the problem of multi-engine template maintenance by making it possible
 to treat [Nunjucks] templates (which are _theoretically_ compatible with
 [Jinja] out of the box, and _almost_ compatible with [Django] and [Liquid]) as
 the source of truth and programmatically transform them into other formats
-(such as [EJS], [ERB], and [Mustache]) and even [PHP], which is basically a
-templating language in and of itself.
+(such as [ERB], [Handlebars], or [Mustache]) and even other _languages_, such
+as [JSX] or [PHP].
 
 ## Play with it!
 Currently I'm experimenting with different output formats, starting with
@@ -47,10 +47,11 @@ This project is in its infancy, but here is a very rough roadmap:
 [Nunjucks]: https://mozilla.github.io/nunjucks/
 [Django]: https://docs.djangoproject.com/en/1.10/topics/templates/
 [Jinja]: http://jinja.pocoo.org/
-[EJS]: http://www.embeddedjs.com/
+[Handlebars]: http://handlebarsjs.com/
 [ERB]: https://docs.puppet.com/puppet/latest/reference/lang_template_erb.html
 [Liquid]: https://shopify.github.io/liquid/
 [Mustache]: https://mustache.github.io/
 [PHP]: http://php.net/
+[JSX]: https://facebook.github.io/jsx/
 [parse templates]: src/parse.js
 [basic formatter]: src/format.js
