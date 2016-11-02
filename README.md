@@ -54,5 +54,5 @@ This project is in its infancy, but here is a very rough roadmap:
 [PHP]: http://php.net/
 [JSX]: https://facebook.github.io/jsx/
 [Twig]: http://twig.sensiolabs.org/
-[parse templates]: src/parse.js
+[parse templates]: parse/index.js
 [basic formatter]: src/format.js
