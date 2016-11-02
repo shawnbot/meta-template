@@ -3,10 +3,10 @@ Maintaining templates can be a pain in the butt, especially if you need to
 maintain templates for multiple engines or host languages. Meta-template aims
 to solve the problem of multi-engine template maintenance by making it possible
 to treat [Nunjucks] templates (which are _theoretically_ compatible with
-[Jinja] out of the box, and _almost_ compatible with [Django] and [Liquid]) as
-the source of truth and programmatically transform them into other formats
-(such as [ERB], [Handlebars], or [Mustache]) and even other _languages_, such
-as [JSX] or [PHP].
+[Jinja] out of the box, and _almost_ compatible with [Django], [Liquid], and
+[Twig]) as the **source of truth** and programmatically transform them into other
+formats (such as [ERB], [Handlebars], [Mustache]) and even other _languages_,
+such as [JSX] or [PHP].
 
 ## Play with it!
 Currently I'm experimenting with different output formats, starting with
@@ -53,5 +53,6 @@ This project is in its infancy, but here is a very rough roadmap:
 [Mustache]: https://mustache.github.io/
 [PHP]: http://php.net/
 [JSX]: https://facebook.github.io/jsx/
+[Twig]: http://twig.sensiolabs.org/
 [parse templates]: src/parse.js
 [basic formatter]: src/format.js
