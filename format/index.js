@@ -1,5 +1,4 @@
 'use strict';
-const assert = require('assert');
 const formatFactory = require('./factory');
 
 const getFormat = function(name, overrides) {
