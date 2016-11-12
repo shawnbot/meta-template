@@ -42,7 +42,9 @@ module.exports = formatFactory({
   // quote patterns
   P_NUMERIC:    abs.P_NUMERIC,
   P_WORD:       abs.P_WORD,
+
   quote:        abs.quote,
+  accessor:     abs.accessor,
 
   Compare:      abs.Compare,
   If:           abs.If,

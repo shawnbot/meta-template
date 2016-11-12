@@ -38,6 +38,8 @@ module.exports = formatFactory({
   FILTER_DELIM: '|',
 
   quote:        abs.quote,
+  accessor:     abs.accessor,
+
   Compare:      abs.Compare,
   If:           abs.If,
   Filter:       Filter,
