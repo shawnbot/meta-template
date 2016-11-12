@@ -1,6 +1,7 @@
 'use strict';
 const formatFactory = require('./factory');
 const abs = require('./abstract');
+const ast = require('../ast');
 
 const If = function(node) {
   const parts = [
@@ -45,8 +46,8 @@ const For = function(node) {
   ]).join('');
 };
 
-const Symbol = function(node, parent) {
-  const prefix = parent && parent.type === 'Filter'
+const Symbol = function(node) {
+  const prefix = node.parent && ast.getNodeType(node.parent) === 'Filter'
     ? ''
     : this.VAR_PREFIX;
   return prefix + node.value;
@@ -63,14 +64,27 @@ const Filter = function(node) {
   ].join('');
 };
 
+const accessor = function(symbol) {
+  return '[' + this.quote(symbol, true) + ']';
+};
+
 module.exports = formatFactory({
   WS:           ' ',
-  VAR_PREFIX:   '$',
+
   C_OPEN:       '<?php',
   C_CLOSE:      '?>',
+
   O_OPEN:       '<?=',
   O_CLOSE:      '?>',
+
+  VAR_PREFIX:   '$',
+
+  P_NUMERIC:    abs.P_NUMERIC,
+  P_WORD:       abs.P_WORD,
+
   quote:        abs.quote,
+  accessor:     accessor,
+
   Compare:      abs.Compare,
   If:           If,
   Filter:       Filter,
