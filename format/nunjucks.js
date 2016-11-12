@@ -3,16 +3,17 @@ const formatFactory = require('./factory');
 const abs = require('./abstract');
 
 const Filter = function(node) {
-  var args = node.args.children;
+  const args = node.args.children;
+  const rest = args.length > 1
+    ? '(' + args.slice(1)
+        .map(arg => this.node(arg))
+        .join(', ') + ')'
+    : '';
   return [
     this.node(args[0]), this.WS,
     this.FILTER_DELIM, this.WS,
     this.node(node.name),
-    args.length > 1
-      ? '(' + args.slice(1)
-          .map(arg => this.node(arg))
-          .join(', ') + ')'
-      : ''
+    rest
   ].join('');
 };
 
