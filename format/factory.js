@@ -1,17 +1,14 @@
 'use strict';
+const assign = require('object-assign');
 
 const factory = (formatters) => {
-  const formats = Object.assign(
-    {},
-    formatters
-  );
+  const formats = assign({}, formatters);
 
-  const formatNode = function(node, parent) {
+  const formatNode = function(node) {
     var format = formats[node.type];
     switch (typeof format) {
       case 'function':
-        // XXX set node.parent here?
-        return format.call(formats, node, parent);
+        return format.call(formats, node);
       default:
         throw new Error('Unsupported node type found: "' + node.type + '"');
     }
