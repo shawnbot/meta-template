@@ -57,6 +57,8 @@ const For = function(node) {
 const LookupVal = function(node) {
   invariant(typeof this.quote === 'function',
             'Encountered LookupVal without quote() method');
+  invariant(typeof this.accessor === 'function',
+            'Encountered LookupVal without accessor() method');
 
   const stack = [node.val.value];
   var target = node.target;
@@ -64,12 +66,17 @@ const LookupVal = function(node) {
     stack.unshift(target.val.value);
     target = target.target;
   }
+  const str = (this.VAR_PREFIX || '') + target.value;
   return stack.reduce((str, symbol) => {
-    const out = this.quote(symbol);
-    return /^[0-9'"]/.test(out)
-      ? str + '[' + out + ']'
-      : str + '.' + out;
-  }, target.value);
+    return str + this.accessor(symbol);
+  }, str);
+};
+
+const accessor = function(symbol) {
+  const str = this.quote(symbol)
+  return /^[0-9'"]/.test(str)
+    ? '[' + str + ']'
+    : '.' + str;
 };
 
 const Literal = function(node) {
@@ -161,6 +168,7 @@ module.exports = {
 
   // abstract word quoting helper
   quote:        quote,
+  accessor:     accessor,
 
   Compare:      Compare,
   If:           If,
