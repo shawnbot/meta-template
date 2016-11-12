@@ -1,5 +1,10 @@
+'use strict';
+const invariant = require('invariant');
 
 const If = function(node) {
+  invariant(this.K_IF, 'Encountered If without K_IF');
+  invariant(this.K_END_IF, 'Encountered If without K_END_IF');
+
   const parts = [
     this.C_OPEN, this.WS,
     this.K_IF, this.WS,
@@ -9,6 +14,7 @@ const If = function(node) {
   ];
 
   if (node.else_) {
+    invariant(this.K_ELSE, 'Encountered If..Else without K_ELSE');
     // TODO: produce elseif expressions, rather than nested if/else
     parts.push(
       this.C_OPEN, this.WS,
@@ -25,6 +31,10 @@ const If = function(node) {
 };
 
 const For = function(node) {
+  invariant(this.K_FOR, 'Encountered For..In without K_FOR');
+  invariant(this.K_FOR_IN, 'Encountered For..In without K_FOR_IN');
+  invariant(this.K_END_FOR, 'Encountered For..In without K_END_FOR');
+
   const parts = [
     this.C_OPEN, this.WS,
     this.K_FOR, this.WS,
@@ -45,14 +55,17 @@ const For = function(node) {
 };
 
 const LookupVal = function(node) {
+  invariant(typeof this.quote === 'function',
+            'Encountered LookupVal without quote() method');
+
+  const stack = [node.val.value];
   var target = node.target;
-  var stack = [node.val.value];
   while (target.type === 'LookupVal') {
     stack.unshift(target.val.value);
     target = target.target;
   }
   return stack.reduce((str, symbol) => {
-    var out = this.quote(symbol);
+    const out = this.quote(symbol);
     return /^[0-9'"]/.test(out)
       ? str + '[' + out + ']'
       : str + '.' + out;
@@ -86,7 +99,7 @@ const TemplateData = function(node) {
   return node.value;
 };
 
-const Symbol = function(node, parent) {
+const Symbol = function(node) {
   return node.value;
 };
 
@@ -99,6 +112,11 @@ const Compare = function(node) {
 };
 
 const quote = function(symbol, force) {
+  invariant(this.P_NUMERIC instanceof RegExp,
+            'quote() requires P_NUMERIC regexp');
+  invariant(this.P_WORD instanceof RegExp,
+            'quote() requires P_WORD regexp');
+
   if (this.P_NUMERIC.test(symbol)) {
     return symbol;
   }
