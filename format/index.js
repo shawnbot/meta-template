@@ -16,8 +16,15 @@ const getFormat = function(name, overrides) {
   return overrides ? fmt.extend(overrides) : fmt;
 };
 
+const nunjucks = require('./nunjucks');
+
 module.exports = {
+  get: getFormat,
   factory: formatFactory,
-  defaultFormat: getFormat('nunjucks'),
-  get: getFormat
+  aliases: aliases,
+  defaultFormat: nunjucks,
+  nunjucks: nunjucks,
+  liquid: require('./liquid'),
+  handlebars: require('./handlebars'),
+  php: require('./php'),
 };
