@@ -66,9 +66,11 @@ const LookupVal = function(node) {
     stack.unshift(target.val.value);
     target = target.target;
   }
-  const str = (this.VAR_PREFIX || '') + target.value;
-  return stack.reduce((str, symbol) => {
-    return str + this.accessor(symbol);
+  const str = this.VAR_PREFIX
+    ? this.VAR_PREFIX + target.value
+    : target.value;
+  return stack.reduce((_, symbol) => {
+    return _ + this.accessor(symbol);
   }, str);
 };
 
