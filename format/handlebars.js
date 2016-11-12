@@ -4,12 +4,7 @@ const invariant = require('invariant');
 const formatFactory = require('./factory');
 
 const If = function(node) {
-  invariant(node.cond.type === 'Symbol' ||
-            node.cond.type === 'LookupVal',
-            'Encountered If with unexpected condition type: "' +
-              node.cond.type + '" (expected Symbol or LookupVal)');
-
-  this._context.unshift(node.cond);
+  this._chomp(node.cond);
 
   const parts = [
     this.C_OPEN,
@@ -19,7 +14,7 @@ const If = function(node) {
     this.node(node.body)
   ];
 
-  this._context.shift();
+  this._spit(node.cond);
 
   if (node.else_) {
     parts.push(
@@ -39,9 +34,46 @@ const If = function(node) {
   return parts.join('');
 };
 
+const _chomp = function(node) {
+  switch (node.type) {
+    case 'Symbol':
+      this._context.unshift(node.value);
+      break;
+
+    case 'LookupVal':
+      var target = node.target;
+      var depth = 1;
+      while (target.type === 'LookupVal') {
+        this._context.unshift(target.val.value);
+        target = target.target;
+        depth++;
+      }
+      this._context.unshift(target.value);
+      node._lookupDepth = depth;
+      break;
+
+    default:
+      throw new Error('Expected Symbol or LookupVal, but got "' +
+                      node.type + '"');
+  }
+};
+
+const _spit = function(node) {
+  switch (node.type) {
+    case 'Symbol':
+      this._context.shift();
+      break;
+
+    case 'LookupVal':
+      invariant(node._lookupDepth, 'Missing _lookupDepth in _spit()');
+      this._context.splice(0, node._lookupDepth);
+      break;
+  }
+};
+
 const For = function(node) {
 
-  this._context.unshift(node.name);
+  this._chomp(node.name);
 
   const parts = [
     '{{#each ',
@@ -50,14 +82,19 @@ const For = function(node) {
     this.node(node.body)
   ];
 
-  this._context.shift();
+  this._spit(node.name);
 
   parts.push('{{/each}}');
 
   return parts.join('');
 };
 
-const Symbol = abs.Symbol;
+const Symbol = function(node) {
+  const value = node.value;
+  return this.P_IDENTIFIER.test(value)
+    ? value
+    : '[' + value + ']';
+};
 
 const LookupVal = function(node) {
 
@@ -69,27 +106,22 @@ const LookupVal = function(node) {
   }
   stack.unshift(target.value);
 
-  /**
-   * FIXME: this loop is meant to "trim" leading symbols in a lookup
-   * if the same symbols match the beginning of our context stack, as in:
-   *
-   * {% for y in x %}hi {{ y.z }}{% endfor %}
-   *
-   * should translate to:
-   *
-   * {{#each x}}hi {{z}}{{/each}}
-   *
-   * It doesn't do nearly the right thing... yet.
-   */
   var i = 0;
-  while (this._context[i] && stack[0] === this._context[i].value) {
+  while (this._context[i] && stack[0] === this._context[i]) {
+    // console.warn('trimming:', stack[0], '@', i);
     stack.shift();
     i++;
   }
 
-  return stack.reduce((out, symbol) => {
-    return out + this.accessor(symbol);
-  }, stack.shift());
+  if (stack.length === 0) {
+    return '.';
+  } else if (stack.length === 1) {
+    return this.Symbol({value: stack[0]});
+  } else {
+    return stack.reduce((out, symbol) => {
+      return out + this.accessor(symbol);
+    }, stack.shift());
+  }
 };
 
 const quote = function(symbol) {
@@ -136,7 +168,10 @@ module.exports = formatFactory({
 
   quote:        quote,
   accessor:     accessor,
+  _chomp:       _chomp,
+  _spit:        _spit,
 
+  Literal:      abs.Literal,
   LookupVal:    LookupVal,
   NodeList:     abs.NodeList,
   Output:       abs.Output,
