@@ -69,16 +69,9 @@ const LookupVal = function(node) {
   const str = this.VAR_PREFIX
     ? this.VAR_PREFIX + target.value
     : target.value;
-  return stack.reduce((_, symbol) => {
-    return _ + this.accessor(symbol);
+  return stack.reduce((out, symbol) => {
+    return out + this.accessor(symbol);
   }, str);
-};
-
-const accessor = function(symbol) {
-  const str = this.quote(symbol)
-  return /^[0-9'"]/.test(str)
-    ? '[' + str + ']'
-    : '.' + str;
 };
 
 const Literal = function(node) {
@@ -132,6 +125,13 @@ const quote = function(symbol, force) {
   return (!force && this.P_WORD.test(symbol))
     ? symbol
     : "'" + symbol.replace(/'/g, "\\'") + "'";
+};
+
+const accessor = function(symbol) {
+  const str = this.quote(symbol)
+  return /^[0-9'"]/.test(str)
+    ? '[' + str + ']'
+    : '.' + str;
 };
 
 module.exports = {
