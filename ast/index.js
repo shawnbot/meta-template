@@ -10,6 +10,7 @@ const NODE_KEYS = [
   'else_',
   'name',
   'target',
+  'template',
   'val',
 ];
 
@@ -29,21 +30,22 @@ const getNodeType = (node) => {
   }), type);
 };
 
-const _normalize = (node) => {
-  delete node.lineno;
-  delete node.colno;
-  delete node.parent;
-  node.type = getNodeType(node);
-  return node;
+const normalize = (node) => {
+  return walk(node, n => {
+    n.type = getNodeType(n);
+  });
 };
 
-const normalize = (node) => {
-  return walk(node, _normalize);
+const clean = (node) => {
+  return walk(node, n => {
+    delete n.lineno;
+    delete n.colno;
+    delete n.parent;
+  });
 };
 
 const walk = (node, func) => {
   if (func(node) !== false) {
-
     CHILD_KEYS
       .filter(key => Array.isArray(node[key]))
       .forEach(key => {
@@ -58,6 +60,7 @@ const walk = (node, func) => {
 };
 
 module.exports = {
+  clean: clean,
   normalize: normalize,
   getNodeType: getNodeType,
   walk: walk
