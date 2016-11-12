@@ -17,7 +17,9 @@
   "license": "CC0-1.0",
   "dependencies": {
     "concat-stream": "^1.5.2",
+    "invariant": "^2.2.1",
     "nunjucks": "^2.5.2",
+    "object-assign": "^4.1.0",
     "yargs": "^6.3.0"
   },
   "devDependencies": {

@@ -1,20 +1,60 @@
 'use strict';
-const nunjucks = require('./nunjucks');
+const formatFactory = require('./factory');
+const abs = require('./abstract');
 
-module.exports = nunjucks.extend({
-  // Nunjucks/Jinja: {{ foo | bar(baz, 1) }}
-  // Liquid: {{ foo | bar: baz, 1 }}
-  Filter: function(node) {
-    var args = node.args.children;
-    return [
-      this.node(args[0]),
-      ' | ',
-      this.node(node.name),
-      args.length > 1
-        ? ': ' + args.slice(1)
-            .map(arg => this.node(arg))
-            .join(', ')
-        : ''
-    ].join('');
-  }
+const Filter = function(node) {
+  const args = node.args.children;
+  const rest = args.length > 1
+    ? ': ' + args.slice(1)
+        .map(arg => this.node(arg))
+        .join(', ')
+    : '';
+  return [
+    this.node(args[0]), this.WS,
+    this.FILTER_DELIM, this.WS,
+    this.node(node.name),
+    rest
+  ].join('');
+};
+
+module.exports = formatFactory({
+  // whitespace
+  WS:           ' ',
+
+  // keywords
+  K_IF:         'if',
+  K_ELSE:       'else',
+  K_ELSE_IF:    'elsif',
+  K_END_IF:     'endif',
+  K_FOR:        'for',
+  K_END_FOR:    'endfor',
+  K_FOR_IN:     'in',
+
+  // control structure delimiters
+  C_OPEN:       '{%',
+  C_CLOSE:      '%}',
+  // output delimiters
+  O_OPEN:       '{{',
+  O_CLOSE:      '}}',
+
+  FILTER_DELIM: '|',
+
+  // quote patterns
+  P_NUMERIC:    abs.P_NUMERIC,
+  P_WORD:       abs.P_WORD,
+
+  quote:        abs.quote,
+  accessor:     abs.accessor,
+
+  Compare:      abs.Compare,
+  If:           abs.If,
+  Filter:       Filter,
+  For:          abs.For,
+  Literal:      abs.Literal,
+  LookupVal:    abs.LookupVal,
+  NodeList:     abs.NodeList,
+  Output:       abs.Output,
+  Root:         abs.NodeList,
+  Symbol:       abs.Symbol,
+  TemplateData: abs.TemplateData
 });
