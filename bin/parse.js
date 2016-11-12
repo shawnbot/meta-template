@@ -3,6 +3,9 @@
 
 const yargs = require('yargs');
 const options = yargs
+  .alias('c', 'clean')
+  .alias('t', 'trim')
+  .alias('v', 'verbose')
   .argv;
 const args = options._;
 
@@ -21,16 +24,13 @@ if (options.format) {
 
 if (args.length) {
   args.forEach(filename => {
-    parse.file(filename, (error, node) => {
-      if (!options.format) {
-        node = ast.normalize(node);
-      }
+    parse.file(filename, options, (error, node) => {
       console.log(filename, '=>\n', fmt(node));
     });
   });
 } else {
   process.stdin.pipe(concat(buffer => {
-    const node = parse.buffer(buffer);
+    const node = parse.buffer(buffer, options);
     console.log(fmt(node));
   }));
 }
