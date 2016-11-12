@@ -18,7 +18,10 @@ const Filter = function(node) {
 };
 
 module.exports = formatFactory({
+  // whitespace
   WS:           ' ',
+
+  // keywords
   K_IF:         'if',
   K_ELSE:       'else',
   K_ELSE_IF:    'elsif',
@@ -27,17 +30,20 @@ module.exports = formatFactory({
   K_END_FOR:    'endfor',
   K_FOR_IN:     'in',
 
+  // control structure delimiters
   C_OPEN:       '{%',
   C_CLOSE:      '%}',
+  // output delimiters
   O_OPEN:       '{{',
   O_CLOSE:      '}}',
 
-  P_NUMERIC:    abs.P_NUMERIC,
-  P_WORD:       abs.P_WORD,
-
   FILTER_DELIM: '|',
 
+  // quote patterns
+  P_NUMERIC:    abs.P_NUMERIC,
+  P_WORD:       abs.P_WORD,
   quote:        abs.quote,
+
   Compare:      abs.Compare,
   If:           abs.If,
   Filter:       Filter,
