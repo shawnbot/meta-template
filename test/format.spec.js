@@ -3,10 +3,14 @@ const assert = require('assert');
 const parse = require('../parse');
 const format = require('../format');
 
+const opts = {
+  clean: true
+};
+
 const assertFormats = (fmt, templates) => {
   templates.forEach(template => {
     it(template, function() {
-      const ast = parse.string(template);
+      const ast = parse.string(template, opts);
       assert.equal(template, fmt(ast));
     });
   });
