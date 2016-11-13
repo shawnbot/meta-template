@@ -1,6 +1,7 @@
 'use strict';
-const formatFactory = require('./factory');
 const abs = require('./abstract');
+const formatFactory = require('./factory');
+const invariant = require('invariant');
 
 const Assign = function(node) {
   return [
@@ -14,17 +15,30 @@ const Assign = function(node) {
 };
 
 const Filter = function(node) {
+  var name = node.name.value;
+
+  // TODO: decide whether it's okay to use custom filters
+  /*
+  invariant(name in this.builtinFilters,
+            'No such builtin filter: "' + name + '"');
+  */
+
+  const builtin = this.builtinFilters[name];
+  if (builtin && builtin !== true) {
+    name = builtin;
+  }
+
   const args = node.args.children;
   const rest = args.length > 1
     ? ': ' + args.slice(1)
         .map(arg => this.node(arg))
         .join(', ')
     : '';
+
   return [
     this.node(args[0]), this.WS,
     this.FILTER_DELIM, this.WS,
-    this.node(node.name),
-    rest
+    name, rest
   ].join('');
 };
 
@@ -105,6 +119,51 @@ module.exports = formatFactory({
 
   comparators: {
     '===': '==',
+  },
+
+  builtinFilters: {
+    'abs': true,
+    'append': true,
+    'capitalize': true,
+    'ceil': true,
+    'date': true,
+    'default': true,
+    'divided_by': true,
+    'downcase': true,
+    'escape': true,
+    'escape_once': true,
+    'first': true,
+    'floor': true,
+    'join': true,
+    'last': true,
+    'lstrip': true,
+    'map': true,
+    'minus': true,
+    'modulo': true,
+    'newline_to_br': true,
+    'plus': true,
+    'prepend': true,
+    'remove': true,
+    'remove_first': true,
+    'replace': true,
+    'replace_first': true,
+    'reverse': true,
+    'round': true,
+    'rstrip': true,
+    'size': true,
+    'slice': true,
+    'sort': true,
+    'split': true,
+    'strip': true,
+    'strip_html': true,
+    'strip_newlines': true,
+    'times': true,
+    'truncate': true,
+    'truncatewords': true,
+    'uniq': true,
+    'upcase': true,
+    'urlencode': 'url_encode',
+    'url_encode': true,
   },
 
   Add:          Operator('plus'),
