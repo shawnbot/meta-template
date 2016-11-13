@@ -57,7 +57,7 @@ const walk = (node, func) => {
       });
 
     NODE_KEYS
-      .filter(key => typeof node[key] === 'object')
+      .filter(key => node[key] && typeof node[key] === 'object')
       .forEach(key => walk(node[key], func));
   }
   return node;
