@@ -161,6 +161,25 @@ const Group = function(node) {
     .join(this.WS) + ')';
 };
 
+const Capture = function(node) {
+  invariant(Array.isArray(node.targets) || node.name,
+            'Capture is missing a name or targets: ' + Object.keys(node));
+  invariant(node.body && typeof node.body === 'object',
+            'Capure.body is not an Object');
+  const name = node.name || node.targets[0];
+  return [
+    this.C_OPEN, this.WS,
+    this.K_CAPTURE, this.WS,
+    this.node(name), this.WS,
+    this.C_CLOSE,
+    this.node(node.body),
+    this.C_OPEN, this.WS,
+    this.K_END_CAPTURE, this.WS,
+    this.C_CLOSE
+  ].join('');
+};
+
+
 const quote = function(symbol, force) {
   invariant(this.P_NUMERIC instanceof RegExp,
             'quote() requires P_NUMERIC regexp');
@@ -221,6 +240,7 @@ module.exports = {
   accessor:     accessor,
 
   Block:        Block,
+  Capture:      Capture,
   Compare:      Compare,
   Extends:      Extends,
   For:          For,
