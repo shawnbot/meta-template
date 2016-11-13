@@ -136,6 +136,39 @@ describe('liquid format (nunjucks -> liquid)', function() {
 
   });
 
+  describe('comparator conversion', function() {
+    it('replaces === with ==', function() {
+      assertFormats(
+        '{{ x === 1 }}',
+        '{{ x == 1 }}'
+      );
+    });
+  });
+
+  describe('symbol aliases', function() {
+    it('replaces null with nil', function() {
+      assertFormats(
+        '{{ x == null }}',
+        '{{ x == nil }}'
+      );
+    });
+  });
+
+  describe('builtin filter name aliases', function() {
+    assertFormats(
+      '{{ x | dump }}',
+      '{{ x | jsonify }}'
+    );
+    assertFormats(
+      '{{ x | striptags }}',
+      '{{ x | strip_html }}'
+    );
+    assertFormats(
+      '{{ x | urlencode }}',
+      '{{ x | url_encode }}'
+    );
+  });
+
   describe('set node conversion', function() {
     it('subs set for assign', function() {
       assertFormats(
