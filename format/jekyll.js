@@ -1,5 +1,6 @@
 'use strict';
 const abs = require('./abstract');
+const assign = require('object-assign');
 const ast = require('../ast');
 const invariant = require('invariant');
 const liquid = require('./liquid');
@@ -91,6 +92,10 @@ const Include = function(node) {
 };
 
 module.exports = liquid.extend({
+  builtinFilters: assign({}, liquid.builtinFilters, {
+    'dump': 'jsonify'
+  }),
+
   Include:      Include,
   Root:         Root,
 });

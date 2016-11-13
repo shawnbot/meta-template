@@ -125,7 +125,6 @@ module.exports = formatFactory({
     'default': true,
     'divided_by': true,
     'downcase': true,
-    'dump': 'jsonify',
     'escape': true,
     'escape_once': true,
     'first': true,

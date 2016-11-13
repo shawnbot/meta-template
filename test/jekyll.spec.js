@@ -35,4 +35,11 @@ describe('jekyll format (nunjucks -> jekyll)', function() {
     });
   });
 
+  describe('builtin filter name aliases', function() {
+    assertFormats(
+      '{{ x | dump }}',
+      '{{ x | jsonify }}'
+    );
+  });
+
 });

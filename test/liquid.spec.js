@@ -156,10 +156,6 @@ describe('liquid format (nunjucks -> liquid)', function() {
 
   describe('builtin filter name aliases', function() {
     assertFormats(
-      '{{ x | dump }}',
-      '{{ x | jsonify }}'
-    );
-    assertFormats(
       '{{ x | striptags }}',
       '{{ x | strip_html }}'
     );
