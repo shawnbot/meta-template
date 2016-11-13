@@ -73,14 +73,6 @@ const Set = function(node) {
   }
 };
 
-const Symbol = function(node) {
-  const value = node.value;
-  if (value in this.symbolAliases) {
-    node.value = this.symbolAliases[value];
-  }
-  return abs.Symbol.call(this, node);
-};
-
 module.exports = formatFactory({
   // whitespace
   WS:           ' ',
@@ -116,11 +108,11 @@ module.exports = formatFactory({
   quote:        abs.quote,
   accessor:     abs.accessor,
 
-  comparators: {
+  operatorAliases: {
     '===': '==',
   },
 
-  symbolAliases: {
+  literalAliases: {
     'null': 'nil',
   },
 
@@ -188,6 +180,6 @@ module.exports = formatFactory({
   Root:         abs.Root,
   Set:          Set,
   Sub:          Operator('minus'),
-  Symbol:       Symbol,
+  Symbol:       abs.Symbol,
   TemplateData: abs.TemplateData
 });
