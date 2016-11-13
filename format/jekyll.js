@@ -6,8 +6,8 @@ const invariant = require('invariant');
 const liquid = require('./liquid');
 
 /**
- * The Liquid root node formatter offers some interop with the Nunjucks/Jinja
- * 'extends' and 'block' inheritance feature.
+ * The Liquid root node formatter offers some interop with the
+ * Nunjucks/Jinja 'extends' and 'block' inheritance feature.
  */
 const Root = function(node) {
   // 1. find the {% extends %} node if there is one
@@ -92,8 +92,12 @@ const Include = function(node) {
 };
 
 module.exports = liquid.extend({
+  // for Jekyll's extensions, see:
+  // <http://jekyllrb.com/docs/templates/>
   builtinFilters: assign({}, liquid.builtinFilters, {
-    'dump': 'jsonify'
+    'dump':       'jsonify',
+    'int':        'to_integer',
+    'wordcount':  'number_of_words',
   }),
 
   Include:      Include,
