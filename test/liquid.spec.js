@@ -73,7 +73,7 @@ describe('liquid format (nunjucks -> liquid)', function() {
       "{% if z %}yes{% else %}no{% endif %}"
     );
     assertFormats(
-      "{% if z %}yes{% elseif y %}maybe{% else %}no{% endif %}",
+      "{% if z %}yes{% elif y %}maybe{% else %}no{% endif %}",
       "{% if z %}yes{% else %}{% if y %}maybe{% else %}no{% endif %}{% endif %}"
     );
   });
