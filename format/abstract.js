@@ -75,7 +75,15 @@ const LookupVal = function(node) {
 };
 
 const Literal = function(node) {
-  return this.quote(node.value, true);
+  const value = node.value;
+
+  if (Array.isArray(this.literals) && this.literals.indexOf(value) > -1) {
+    return value;
+  } else if (this.literalAliases && value in this.literalAliases) {
+    return this.literalAliases[value];
+  }
+
+  return this.quote(value, true);
 };
 
 const Output = function(node) {
@@ -139,8 +147,9 @@ const Include = function(node) {
 
 const Compare = function(node) {
   var type = node.ops[0].type;
-  if (this.comparators && this.comparators[type]) {
-    type = this.comparators[type];
+  var alias = this.operatorAliases ? this.operatorAliases[type] : null;
+  if (alias) {
+    type = alias;
   }
   return [
     this.node(node.expr),
