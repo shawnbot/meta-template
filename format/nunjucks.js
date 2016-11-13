@@ -71,6 +71,7 @@ module.exports = formatFactory({
   accessor:     abs.accessor,
 
   Add:          abs.Operator('+'),
+  And:          abs.Operator('and'),
   Block:        abs.Block,
   Compare:      abs.Compare,
   Div:          abs.Operator('/'),
@@ -84,6 +85,7 @@ module.exports = formatFactory({
   LookupVal:    abs.LookupVal,
   Mul:          abs.Operator('*'),
   NodeList:     abs.NodeList,
+  Or:           abs.Operator('or'),
   Output:       abs.Output,
   Root:         abs.NodeList,
   Set:          Set,
