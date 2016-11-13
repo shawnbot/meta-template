@@ -90,35 +90,7 @@ const Include = function(node) {
   ].join('');
 };
 
-const Set = function(node) {
-  invariant(Array.isArray(node.targets), 'Set.targets is not an array');
-  invariant(node.targets.length === 1, 'Set.targets.length !== 1');
-
-  if (node.body) {
-    return this.Capture({
-      targets: node.targets,
-      body: node.body.body
-    });
-  } else {
-    return this.Assign(node);
-  }
-};
-
-const Assign = function(node) {
-  return [
-    this.C_OPEN, this.WS,
-    this.K_ASSIGN, this.WS,
-    this.node(node.targets[0]), this.WS,
-    '=', this.WS,
-    this.node(node.value), this.WS,
-    this.C_CLOSE
-  ].join('');
-};
-
 module.exports = liquid.extend({
-  Assign:       Assign,
-  Capture:      abs.Capture,
   Include:      Include,
-  Set:          Set,
   Root:         Root,
 });

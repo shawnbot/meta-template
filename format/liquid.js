@@ -1,7 +1,17 @@
 'use strict';
 const formatFactory = require('./factory');
 const abs = require('./abstract');
-const ast = require('../ast');
+
+const Assign = function(node) {
+  return [
+    this.C_OPEN, this.WS,
+    this.K_ASSIGN, this.WS,
+    this.node(node.targets[0]), this.WS,
+    '=', this.WS,
+    this.node(node.value), this.WS,
+    this.C_CLOSE
+  ].join('');
+};
 
 const Filter = function(node) {
   const args = node.args.children;
@@ -33,6 +43,20 @@ const Operator = (filter) => {
       }
     });
   };
+};
+
+const Set = function(node) {
+  invariant(Array.isArray(node.targets), 'Set.targets is not an array');
+  invariant(node.targets.length === 1, 'Set.targets.length !== 1');
+
+  if (node.body) {
+    return this.Capture({
+      targets: node.targets,
+      body: node.body.body
+    });
+  } else {
+    return this.Assign(node);
+  }
 };
 
 module.exports = formatFactory({
@@ -71,6 +95,8 @@ module.exports = formatFactory({
   accessor:     abs.accessor,
 
   Add:          Operator('plus'),
+  Assign:       Assign,
+  Capture:      abs.Capture,
   Compare:      abs.Compare,
   Div:          Operator('divided_by'),
   Filter:       Filter,
@@ -82,6 +108,7 @@ module.exports = formatFactory({
   NodeList:     abs.NodeList,
   Output:       abs.Output,
   Root:         abs.Root,
+  Set:          Set,
   Sub:          Operator('minus'),
   Symbol:       abs.Symbol,
   TemplateData: abs.TemplateData
