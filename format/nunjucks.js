@@ -17,6 +17,28 @@ const Filter = function(node) {
   ].join('');
 };
 
+const Block = function(node) {
+  return [
+    this.C_OPEN, this.WS,
+    this.K_BLOCK, this.WS,
+    this.node(node.name), this.WS,
+    this.C_CLOSE,
+    this.node(node.body),
+    this.C_OPEN, this.WS,
+    this.K_END_BLOCK, this.WS,
+    this.C_CLOSE,
+  ].join('');
+};
+
+const Extends = function(node) {
+  return [
+    this.C_OPEN, this.WS,
+    this.K_EXTENDS, this.WS,
+    this.node(node.template), this.WS,
+    this.C_CLOSE
+  ].join('');
+};
+
 module.exports = formatFactory({
   WS:           ' ',
   K_IF:         'if',
@@ -26,6 +48,9 @@ module.exports = formatFactory({
   K_FOR:        'for',
   K_END_FOR:    'endfor',
   K_FOR_IN:     'in',
+  K_BLOCK:      'block',
+  K_END_BLOCK:  'endblock',
+  K_EXTENDS:    'extends',
 
   C_OPEN:       '{%',
   C_CLOSE:      '%}',
@@ -40,8 +65,10 @@ module.exports = formatFactory({
   quote:        abs.quote,
   accessor:     abs.accessor,
 
+  Block:        Block,
   Compare:      abs.Compare,
   If:           abs.If,
+  Extends:      Extends,
   Filter:       Filter,
   For:          abs.For,
   Literal:      abs.Literal,
