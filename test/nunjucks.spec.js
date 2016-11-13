@@ -60,4 +60,34 @@ describe('default format (nunjucks -> nunjucks)', function() {
     );
   });
 
+  describe('operators', function() {
+    describe('addition', function() {
+      assertFormats(fmt, [
+        '{{ foo + bar }}',
+        '{{ foo + 1 }}',
+        '{{ foo + 1 + bar }}',
+        "{{ foo + 'bar' }}"
+      ]);
+    });
+    describe('subtraction', function() {
+      assertFormats(fmt, [
+        '{{ foo - bar }}',
+        "{{ foo - 1 }}",
+      ]);
+    });
+    describe('addition and subtraction', function() {
+      assertFormats(fmt, [
+        '{{ foo + bar - 1 }}',
+      ]);
+    });
+  });
+
+  describe('include nodes', function() {
+    assertFormats(fmt, [
+      "{% include 'foo' %}",
+      "{% include foo.bar %}",
+      "{% include foo + '.html' %}",
+    ]);
+  });
+
 });

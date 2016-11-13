@@ -39,6 +39,26 @@ const Extends = function(node) {
   ].join('');
 };
 
+const Include = function(node) {
+  return [
+    this.C_OPEN, this.WS,
+    this.K_INCLUDE, this.WS,
+    this.node(node.template), this.WS,
+    // TODO: support 'ignore missing'?
+    this.C_CLOSE
+  ].join('');
+};
+
+const Operator = (symbol) => {
+  return function(node) {
+    return [
+      this.node(node.left),
+      symbol,
+      this.node(node.right)
+    ].join(this.WS);
+  };
+};
+
 module.exports = formatFactory({
   WS:           ' ',
   K_IF:         'if',
@@ -51,6 +71,7 @@ module.exports = formatFactory({
   K_BLOCK:      'block',
   K_END_BLOCK:  'endblock',
   K_EXTENDS:    'extends',
+  K_INCLUDE:    'include',
 
   C_OPEN:       '{%',
   C_CLOSE:      '%}',
@@ -65,17 +86,20 @@ module.exports = formatFactory({
   quote:        abs.quote,
   accessor:     abs.accessor,
 
+  Add:          Operator('+'),
   Block:        Block,
   Compare:      abs.Compare,
-  If:           abs.If,
   Extends:      Extends,
   Filter:       Filter,
   For:          abs.For,
+  If:           abs.If,
+  Include:      Include,
   Literal:      abs.Literal,
   LookupVal:    abs.LookupVal,
   NodeList:     abs.NodeList,
   Output:       abs.Output,
   Root:         abs.NodeList,
+  Sub:          Operator('-'),
   Symbol:       abs.Symbol,
   TemplateData: abs.TemplateData
 });
