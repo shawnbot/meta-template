@@ -1,6 +1,7 @@
 'use strict';
 const abs = require('./abstract');
 const ast = require('../ast');
+const invariant = require('invariant');
 const liquid = require('./liquid');
 
 /**
@@ -100,6 +101,10 @@ const Extends = function(node) {
 };
 
 const Capture = function(node) {
+  invariant(node.name && typeof node.name === 'object',
+            'capture.name is not an Object');
+  invariant(node.body && typeof node.body === 'object',
+            'capure.body is not an Object');
   return [
     this.C_OPEN, this.WS,
     this.K_CAPTURE, this.WS,
@@ -112,12 +117,38 @@ const Capture = function(node) {
   ].join('');
 };
 
+const Set = function(node) {
+  const body = node.body;
+  if (body) {
+    return this.Capture({
+      name: node.targets[0],
+      body: body.body
+    });
+  } else {
+    return this.Assign(node);
+  }
+};
+
+const Assign = function(node) {
+  invariant(Array.isArray(node.targets), 'assign.targets is not an Array');
+  invariant(node.value && typeof node.value === 'object',
+            'assign.value is not an Object');
+  return [
+    this.C_OPEN, this.WS,
+    this.K_ASSIGN, this.WS,
+    this.node(node.targets[0]), this.WS,
+    '=', this.WS,
+    this.node(node.value), this.WS,
+    this.C_CLOSE
+  ].join('');
+};
+
 module.exports = liquid.extend({
+  Assign:       Assign,
   Block:        Block,
   Capture:      Capture,
   Extends:      Extends,
   Include:      Include,
-  // see: https://mozilla.github.io/nunjucks/templating.html#set
-  // Set:          Set,
+  Set:          Set,
   Root:         Root,
 });
