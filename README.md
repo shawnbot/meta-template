@@ -37,12 +37,12 @@ This project is in its infancy, but here is a very rough roadmap:
   tree (AST)
 - [x] Write a [basic formatter] that can transform AST nodes back into
   Nunjucks template strings
+- [x] Flesh out the conversion API in JavaScript
 - [ ] Do some research on template engine popularity in order to prioritize
   target formats
 - [ ] Determine the "lowest common denominator" set of template features to
   support in parsing so that we can warn when source templates use features
   that aren't available in the desired output format(s)
-- [ ] Flesh out the conversion API in JavaScript
 - [ ] Make a command line tool
 - [ ] Write some API docs
 - [ ] Profit?
