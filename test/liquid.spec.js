@@ -167,6 +167,22 @@ describe('liquid format (nunjucks -> liquid)', function() {
       '{{ x | urlencode }}',
       '{{ x | url_encode }}'
     );
+    assertFormats(
+      '{{ x | upper }}',
+      '{{ x | upcase }}'
+    );
+    assertFormats(
+      '{{ x | lower }}',
+      '{{ x | downcase }}'
+    );
+    assertFormats(
+      '{{ x | title }}',
+      '{{ x | capitalize }}'
+    );
+    assertFormats(
+      '{{ x | nl2br }}',
+      '{{ x | newline_to_br }}'
+    );
   });
 
   describe('set node conversion', function() {
