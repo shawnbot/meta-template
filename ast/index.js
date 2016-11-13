@@ -14,11 +14,13 @@ const NODE_KEYS = [
   'target',
   'template',
   'val',
+  'value',
 ];
 
 const CHILD_KEYS = [
   'children',
   'ops',
+  'targets',
 ];
 
 const NODE_NAMES = Object.keys(nodes);
@@ -55,7 +57,7 @@ const walk = (node, func) => {
       });
 
     NODE_KEYS
-      .filter(key => node[key])
+      .filter(key => typeof node[key] === 'object')
       .forEach(key => walk(node[key], func));
   }
   return node;
