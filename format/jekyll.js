@@ -90,39 +90,14 @@ const Include = function(node) {
   ].join('');
 };
 
-// unconverted block nodes are an error
-const Block = function(node) {
-  throw new Error('Encountered unconverted Block node in Liquid format');
-};
-
-// unconverted extends nodes are an error, too
-const Extends = function(node) {
-  throw new Error('Encountered unconverted Extends node in Liquid format');
-};
-
-const Capture = function(node) {
-  invariant(node.name && typeof node.name === 'object',
-            'capture.name is not an Object');
-  invariant(node.body && typeof node.body === 'object',
-            'capure.body is not an Object');
-  return [
-    this.C_OPEN, this.WS,
-    this.K_CAPTURE, this.WS,
-    this.node(node.name), this.WS,
-    this.C_CLOSE,
-    this.node(node.body),
-    this.C_OPEN, this.WS,
-    this.K_END_CAPTURE, this.WS,
-    this.C_CLOSE
-  ].join('');
-};
-
 const Set = function(node) {
-  const body = node.body;
-  if (body) {
+  invariant(Array.isArray(node.targets), 'Set.targets is not an array');
+  invariant(node.targets.length === 1, 'Set.targets.length !== 1');
+
+  if (node.body) {
     return this.Capture({
-      name: node.targets[0],
-      body: body.body
+      targets: node.targets,
+      body: node.body.body
     });
   } else {
     return this.Assign(node);
@@ -130,9 +105,6 @@ const Set = function(node) {
 };
 
 const Assign = function(node) {
-  invariant(Array.isArray(node.targets), 'assign.targets is not an Array');
-  invariant(node.value && typeof node.value === 'object',
-            'assign.value is not an Object');
   return [
     this.C_OPEN, this.WS,
     this.K_ASSIGN, this.WS,
@@ -145,9 +117,7 @@ const Assign = function(node) {
 
 module.exports = liquid.extend({
   Assign:       Assign,
-  Block:        Block,
-  Capture:      Capture,
-  Extends:      Extends,
+  Capture:      abs.Capture,
   Include:      Include,
   Set:          Set,
   Root:         Root,
