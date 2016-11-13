@@ -78,6 +78,37 @@ describe('liquid format (nunjucks -> liquid)', function() {
     );
   });
 
+  describe('simple operators', function() {
+    describe('addition', function() {
+      assertFormats(
+        '{{ x + 1 }}',
+        '{{ x | plus: 1 }}'
+      );
+      assertFormats(
+        '{{ x + 1 + y }}',
+        '{{ x | plus: 1 | plus: y }}'
+      );
+    });
+
+    describe('subtraction', function() {
+      assertFormats(
+        '{{ x - 1 }}',
+        '{{ x | minus: 1 }}'
+      );
+      assertFormats(
+        '{{ x - y - 1 }}',
+        '{{ x | minus: y | minus: 1 }}'
+      );
+    });
+
+    describe('addition and subtraction', function() {
+      assertFormats(
+        '{{ x - 1 + y }}',
+        '{{ x | minus: 1 | plus: y }}'
+      );
+    });
+  });
+
   describe('block node conversion', function() {
     describe('without {% extends %}', function() {
       assertFormats(

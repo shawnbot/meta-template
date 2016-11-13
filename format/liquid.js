@@ -127,6 +127,23 @@ const Capture = function(node) {
   ].join('');
 };
 
+const Operator = (filter) => {
+  return function(node) {
+    return this.Filter({
+      name: {
+        type: 'Symbol',
+        value: filter
+      },
+      args: {
+        children: [
+          node.left,
+          node.right
+        ]
+      }
+    });
+  };
+};
+
 module.exports = formatFactory({
   // whitespace
   WS:           ' ',
@@ -162,19 +179,21 @@ module.exports = formatFactory({
   quote:        abs.quote,
   accessor:     abs.accessor,
 
+  Add:          Operator('plus'),
   Block:        Block,
-  Compare:      abs.Compare,
   Capture:      Capture,
+  Compare:      abs.Compare,
   Extends:      Extends,
-  If:           abs.If,
-  Include:      Include,
   Filter:       Filter,
   For:          abs.For,
+  If:           abs.If,
+  Include:      Include,
   Literal:      abs.Literal,
   LookupVal:    abs.LookupVal,
   NodeList:     abs.NodeList,
   Output:       abs.Output,
   Root:         Root,
+  Sub:          Operator('minus'),
   Symbol:       abs.Symbol,
   TemplateData: abs.TemplateData
 });
