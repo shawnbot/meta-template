@@ -136,19 +136,4 @@ describe('liquid format (nunjucks -> liquid)', function() {
 
   });
 
-  describe('block node conversion', function() {
-    describe('without {% extends %}', function() {
-      assertFormats(
-        "{% block x %}hi{% endblock %}",
-        "{% if block__x %}{{ block__x }}{% else %}hi{% endif %}"
-      );
-    });
-    describe('with {% extends %}', function() {
-      assertFormats(
-        "{% extends 'a' %}{% block x %}hi{% endblock %}",
-        "{% capture block__x %}hi{% endcapture %}{% include 'a' %}"
-      );
-    });
-  });
-
 });
