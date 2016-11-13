@@ -59,6 +59,16 @@ describe('default format (nunjucks -> nunjucks)', function() {
     );
   });
 
+  describe('literals', function() {
+    it('does not quote true, false, or null', function() {
+      assertFormats([
+        '{{ true }}',
+        '{{ false }}',
+        '{{ null }}',
+      ]);
+    });
+  });
+
   describe('operators', function() {
     describe('add', function() {
       assertFormats([
