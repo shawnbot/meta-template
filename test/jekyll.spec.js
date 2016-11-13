@@ -3,32 +3,27 @@ const assert = require('assert');
 const parse = require('../parse');
 const format = require('../format');
 
-const opts = {
-  clean: true
-};
+before(function() {
+  const opts = {
+    clean: true
+  };
+  this.parse = str => parse.string(str, opts);
+  this.format = format.jekyll;
+});
 
-const fmt = format.jekyll;
-
-const assertFormats = (input, output, reason) => {
-  it(input, function() {
-    const ast = parse.string(input, opts);
-    assert.equal(output, fmt(ast), reason);
-  });
-};
-
-describe('jekyll format (nunjucks -> jekyll)', function() {
+describe('jekyll output', function() {
 
   // TODO: share tests with liquid?
 
   describe('block node conversion', function() {
     describe('without {% extends %}', function() {
-      assertFormats(
+      assert.formatEquals(
         "{% block x %}hi{% endblock %}",
         "{% if block__x %}{{ block__x }}{% else %}hi{% endif %}"
       );
     });
     describe('with {% extends %}', function() {
-      assertFormats(
+      assert.formatEquals(
         "{% extends 'a' %}{% block x %}hi{% endblock %}",
         "{% capture block__x %}hi{% endcapture %}{% include 'a' %}"
       );
@@ -36,7 +31,7 @@ describe('jekyll format (nunjucks -> jekyll)', function() {
   });
 
   describe('builtin filter name aliases', function() {
-    assertFormats(
+    assert.formatEquals(
       '{{ x | dump }}',
       '{{ x | jsonify }}'
     );
