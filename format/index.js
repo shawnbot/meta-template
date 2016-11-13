@@ -26,6 +26,7 @@ module.exports = {
   nunjucks: nunjucks,
   liquid: require('./liquid'),
   jekyll: require('./jekyll'),
+  jinja: require('./jinja'),
   handlebars: require('./handlebars'),
   php: require('./php'),
 };
