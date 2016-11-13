@@ -138,9 +138,13 @@ const Include = function(node) {
 };
 
 const Compare = function(node) {
+  var type = node.ops[0].type;
+  if (this.comparators && this.comparators[type]) {
+    type = this.comparators[type];
+  }
   return [
     this.node(node.expr),
-    node.ops[0].type,
+    type,
     this.node(node.ops[0].expr, node)
   ].join(' ');
 };
