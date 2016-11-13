@@ -59,6 +59,15 @@ const Set = function(node) {
   }
 };
 
+const Symbol = function(node) {
+  switch (node.value) {
+    case 'null':
+      node.value = 'nil';
+      break;
+  }
+  return abs.Symbol.call(this, node);
+};
+
 module.exports = formatFactory({
   // whitespace
   WS:           ' ',
@@ -94,6 +103,10 @@ module.exports = formatFactory({
   quote:        abs.quote,
   accessor:     abs.accessor,
 
+  comparators: {
+    '===': '==',
+  },
+
   Add:          Operator('plus'),
   Assign:       Assign,
   Capture:      abs.Capture,
@@ -110,6 +123,6 @@ module.exports = formatFactory({
   Root:         abs.Root,
   Set:          Set,
   Sub:          Operator('minus'),
-  Symbol:       abs.Symbol,
+  Symbol:       Symbol,
   TemplateData: abs.TemplateData
 });
