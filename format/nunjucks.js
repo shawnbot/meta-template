@@ -49,22 +49,6 @@ const Include = function(node) {
   ].join('');
 };
 
-const Operator = (symbol) => {
-  return function(node) {
-    return [
-      this.node(node.left),
-      symbol,
-      this.node(node.right)
-    ].join(this.WS);
-  };
-};
-
-const Group = function(node) {
-  return '(' + node.children
-    .map(child => this.node(child))
-    .join(this.WS) + ')';
-};
-
 module.exports = formatFactory({
   WS:           ' ',
   K_IF:         'if',
@@ -92,23 +76,23 @@ module.exports = formatFactory({
   quote:        abs.quote,
   accessor:     abs.accessor,
 
-  Add:          Operator('+'),
+  Add:          abs.Operator('+'),
   Block:        Block,
   Compare:      abs.Compare,
-  Div:          Operator('/'),
+  Div:          abs.Operator('/'),
   Extends:      Extends,
   Filter:       Filter,
   For:          abs.For,
-  Group:        Group,
+  Group:        abs.Group,
   If:           abs.If,
   Include:      Include,
   Literal:      abs.Literal,
   LookupVal:    abs.LookupVal,
-  Mul:          Operator('*'),
+  Mul:          abs.Operator('*'),
   NodeList:     abs.NodeList,
   Output:       abs.Output,
   Root:         abs.NodeList,
-  Sub:          Operator('-'),
+  Sub:          abs.Operator('-'),
   Symbol:       abs.Symbol,
   TemplateData: abs.TemplateData
 });

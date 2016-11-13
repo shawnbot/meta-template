@@ -113,6 +113,22 @@ const Compare = function(node) {
   ].join(' ');
 };
 
+const Operator = (symbol) => {
+  return function(node) {
+    return [
+      this.node(node.left),
+      symbol,
+      this.node(node.right)
+    ].join(this.WS);
+  };
+};
+
+const Group = function(node) {
+  return '(' + node.children
+    .map(child => this.node(child))
+    .join(this.WS) + ')';
+};
+
 const quote = function(symbol, force) {
   invariant(this.P_NUMERIC instanceof RegExp,
             'quote() requires P_NUMERIC regexp');
@@ -173,14 +189,15 @@ module.exports = {
   accessor:     accessor,
 
   Compare:      Compare,
-  If:           If,
-
   For:          For,
+  Group:        Group,
+  If:           If,
   Literal:      Literal,
   LookupVal:    LookupVal,
   NodeList:     NodeList,
+  Operator:     Operator,
   Output:       Output,
   Root:         NodeList,
   Symbol:       Symbol,
-  TemplateData: TemplateData
+  TemplateData: TemplateData,
 };
