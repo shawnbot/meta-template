@@ -35,4 +35,28 @@ describe('jekyll format (nunjucks -> jekyll)', function() {
     });
   });
 
+  describe('set node conversion', function() {
+    it('subs set for assign', function() {
+      assertFormats(
+        '{% set foo = 1 %}',
+        '{% assign foo = 1 %}'
+      );
+      assertFormats(
+        '{% set foo = x * 2 %}',
+        '{% assign foo = x | times: 2 %}'
+      );
+    });
+
+    it('uses capture when there is no assignment', function() {
+      assertFormats(
+        '{% set foo %}1{% endset %}',
+        '{% capture foo %}1{% endcapture %}'
+      );
+      assertFormats(
+        '{% set foo %}{{ x * 2 }}{% endset %}',
+        '{% capture foo %}{{ x | times: 2 }}{% endcapture %}'
+      );
+    });
+  });
+
 });
