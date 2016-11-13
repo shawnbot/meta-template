@@ -10,9 +10,10 @@ such as [JSX] or [PHP].
 
 ## Play with it!
 Currently I'm experimenting with different output formats, starting with
-[Liquid] and [PHP][] (which seemed to me the most potentially difficult). You
-can test these out by cloning the repo, running `npm install` to get the
-dependencies, then running the [bin/parse.js](bin/parse.js) script, e.g.:
+[Liquid][] (most useful for us Jekyll users at 18F) and [PHP][] (which seemed
+to me the most potentially difficult). You can test these out by cloning the
+repo, running `npm install` to get the dependencies, then running the
+[bin/parse.js](bin/parse.js) script:
 
 ```sh
 # output the Nunjucks AST in JSON format
