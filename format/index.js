@@ -25,6 +25,7 @@ module.exports = {
   defaultFormat: nunjucks,
   nunjucks: nunjucks,
   liquid: require('./liquid'),
+  jekyll: require('./jekyll'),
   handlebars: require('./handlebars'),
   php: require('./php'),
 };

@@ -4,6 +4,5 @@
  */
 module.exports = {
   hbs:    'handlebars',
-  jekyll: 'liquid',
   njk:    'nunjucks',
 };
