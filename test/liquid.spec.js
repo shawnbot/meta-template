@@ -72,6 +72,10 @@ describe('liquid format (nunjucks -> liquid)', function() {
       "{% if z %}yes{% else %}no{% endif %}",
       "{% if z %}yes{% else %}no{% endif %}"
     );
+    assertFormats(
+      "{% if z %}yes{% elseif y %}maybe{% else %}no{% endif %}",
+      "{% if z %}yes{% else %}{% if y %}maybe{% else %}no{% endif %}{% endif %}"
+    );
   });
 
   describe('block node conversion', function() {
@@ -88,18 +92,5 @@ describe('liquid format (nunjucks -> liquid)', function() {
       );
     });
   });
-
-  /*
-  xdescribe('flattens if/elseif/else hierarchies', function() {
-    assertFormats(
-      "{% if a %}1{% elseif b %}2{% else %}3{% endif %}",
-      "{% if a %}1{% elseif b %}2{% else %}3{% endif %}"
-    );
-    assertFormats(
-      "{% if a %}1{% elseif b %}2{% elseif c %}3{% else %}4{% endif %}",
-      "{% if a %}1{% elseif b %}2{% elseif c %}3{% else %}4{% endif %}"
-    );
-  });
-  */
 
 });
