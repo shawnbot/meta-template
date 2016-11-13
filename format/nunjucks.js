@@ -17,6 +17,30 @@ const Filter = function(node) {
   ].join('');
 };
 
+const Set = function(node) {
+  var parts = [
+    this.C_OPEN, this.WS,
+    this.K_SET, this.WS,
+    node.targets.map(n => this.node(n)).join(', '), this.WS,
+  ];
+  if (node.body) {
+    parts.push(
+      this.C_CLOSE,
+      this.node(node.body.body),
+      this.C_OPEN, this.WS,
+      this.K_END_SET, this.WS,
+      this.C_CLOSE
+    );
+  } else {
+    parts = parts.concat(
+      '=', this.WS,
+      this.node(node.value), this.WS,
+      this.C_CLOSE
+    );
+  }
+  return parts.join('');
+};
+
 module.exports = formatFactory({
   WS:           ' ',
   K_IF:         'if',
@@ -30,6 +54,8 @@ module.exports = formatFactory({
   K_END_BLOCK:  'endblock',
   K_EXTENDS:    'extends',
   K_INCLUDE:    'include',
+  K_SET:        'set',
+  K_END_SET:    'endset',
 
   C_OPEN:       '{%',
   C_CLOSE:      '%}',
@@ -60,6 +86,7 @@ module.exports = formatFactory({
   NodeList:     abs.NodeList,
   Output:       abs.Output,
   Root:         abs.NodeList,
+  Set:          Set,
   Sub:          abs.Operator('-'),
   Symbol:       abs.Symbol,
   TemplateData: abs.TemplateData
