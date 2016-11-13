@@ -135,7 +135,7 @@ module.exports = formatFactory({
   K_ASSIGN:     'assign',
   K_IF:         'if',
   K_ELSE:       'else',
-  K_ELSE_IF:    'elsif',
+  K_ELSE_IF:    'elif',
   K_END_IF:     'endif',
   K_FOR:        'for',
   K_END_FOR:    'endfor',
