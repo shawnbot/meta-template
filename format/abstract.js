@@ -77,10 +77,13 @@ const LookupVal = function(node) {
 const Literal = function(node) {
   const value = node.value;
 
-  if (Array.isArray(this.literals) && this.literals.indexOf(value) > -1) {
-    return value;
-  } else if (this.literalAliases && value in this.literalAliases) {
+  if (this.literalAliases && value in this.literalAliases) {
     return this.literalAliases[value];
+  } else if (Array.isArray(this.literals)) {
+    if (this.literals.indexOf(value) === -1) {
+      throw new Error('Unsupported literal: "' + value + '"');
+    }
+    return value;
   }
 
   return this.quote(value, true);
