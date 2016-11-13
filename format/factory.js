@@ -2,22 +2,29 @@
 const assign = require('object-assign');
 
 const factory = (formatters) => {
-  const formats = assign({}, formatters);
+  const stack = [];
+  const format = assign({
+    _stack: stack
+  }, formatters);
 
   const formatNode = function(node) {
-    var format = formats[node.type];
-    switch (typeof format) {
+    const fmt = format[node.type];
+    switch (typeof fmt) {
       case 'function':
-        return format.call(formats, node);
+        node.parent = stack[stack.length - 1];
+        stack.push(node);
+        const result = fmt.call(format, node);
+        stack.pop();
+        return result;
       default:
         throw new Error('Unsupported node type found: "' + node.type + '"');
     }
   };
 
-  formats.node = formatNode;
+  format.node = formatNode;
 
   formatNode.extend = function(overrides) {
-    return factory(Object.assign(
+    return factory(assign(
       {},
       formatters,
       overrides
