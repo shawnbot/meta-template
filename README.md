@@ -18,6 +18,8 @@ repo, running `npm install` to get the dependencies, then running the
 ```sh
 # output the Nunjucks AST in JSON format
 ./bin/parse.js path/to/template.html
+# do the same without line and col info (--clean), trim input (--trim)
+./bin/parse.js --clean --trim path/to/template.html
 # or use stdin
 echo 'foo {{ bar }} baz {% if x %}hi{% endif %}' | ./bin/parse.js
 # reformat the AST as Nunjucks (this _should_ produce the same output)
