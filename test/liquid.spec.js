@@ -79,7 +79,7 @@ describe('liquid format (nunjucks -> liquid)', function() {
   });
 
   describe('simple operators', function() {
-    describe('addition', function() {
+    describe('add', function() {
       assertFormats(
         '{{ x + 1 }}',
         '{{ x | plus: 1 }}'
@@ -90,7 +90,7 @@ describe('liquid format (nunjucks -> liquid)', function() {
       );
     });
 
-    describe('subtraction', function() {
+    describe('subtract', function() {
       assertFormats(
         '{{ x - 1 }}',
         '{{ x | minus: 1 }}'
@@ -101,12 +101,39 @@ describe('liquid format (nunjucks -> liquid)', function() {
       );
     });
 
-    describe('addition and subtraction', function() {
+    describe('multiply', function() {
+      assertFormats(
+        '{{ x * 2 }}',
+        '{{ x | times: 2 }}'
+      );
+      assertFormats(
+        '{{ x * y * 2 }}',
+        '{{ x | times: y | times: 2 }}'
+      );
+    });
+
+    describe('divide', function() {
+      assertFormats(
+        '{{ x / 2 }}',
+        '{{ x | divided_by: 2 }}'
+      );
+      assertFormats(
+        '{{ x / y }}',
+        '{{ x | divided_by: y }}'
+      );
+    });
+
+    describe('mixed operators', function() {
       assertFormats(
         '{{ x - 1 + y }}',
         '{{ x | minus: 1 | plus: y }}'
       );
+      assertFormats(
+        '{{ x / 2 + y }}',
+        '{{ x | divided_by: 2 | plus: y }}'
+      );
     });
+
   });
 
   describe('block node conversion', function() {
