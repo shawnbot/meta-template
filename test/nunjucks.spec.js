@@ -7,12 +7,16 @@ const opts = {
   clean: true
 };
 
+const assertFormat = (fmt, input, output, reason) => {
+  it(input, function() {
+    const ast = parse.string(input, opts);
+    assert.equal(output, fmt(ast), reason);
+  });
+};
+
 const assertFormats = (fmt, templates) => {
   templates.forEach(template => {
-    it(template, function() {
-      const ast = parse.string(template, opts);
-      assert.equal(template, fmt(ast));
-    });
+    assertFormat(fmt, template, template);
   });
 };
 
@@ -49,13 +53,11 @@ describe('default format (nunjucks -> nunjucks)', function() {
       "{% if z == 'bar' %}yes{% endif %}",
       "{% if z %}yes{% else %}no{% endif %}",
     ]);
-  });
-
-  xdescribe('flattens if/elseif/else hierarchies', function() {
-    assertFormats(fmt, [
-      "{% if a %}1{% elseif b %}2{% else %}3{% endif %}",
-      "{% if a %}1{% elseif b %}2{% elseif c %}3{% else %}4{% endif %}",
-    ]);
+    assertFormat(
+      fmt,
+      "{% if z %}yes{% elseif y %}maybe{% else %}no{% endif %}",
+      "{% if z %}yes{% else %}{% if y %}maybe{% else %}no{% endif %}{% endif %}"
+    );
   });
 
 });
