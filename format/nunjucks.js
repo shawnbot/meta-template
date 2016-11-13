@@ -17,38 +17,6 @@ const Filter = function(node) {
   ].join('');
 };
 
-const Block = function(node) {
-  return [
-    this.C_OPEN, this.WS,
-    this.K_BLOCK, this.WS,
-    this.node(node.name), this.WS,
-    this.C_CLOSE,
-    this.node(node.body),
-    this.C_OPEN, this.WS,
-    this.K_END_BLOCK, this.WS,
-    this.C_CLOSE,
-  ].join('');
-};
-
-const Extends = function(node) {
-  return [
-    this.C_OPEN, this.WS,
-    this.K_EXTENDS, this.WS,
-    this.node(node.template), this.WS,
-    this.C_CLOSE
-  ].join('');
-};
-
-const Include = function(node) {
-  return [
-    this.C_OPEN, this.WS,
-    this.K_INCLUDE, this.WS,
-    this.node(node.template), this.WS,
-    // TODO: support 'ignore missing'?
-    this.C_CLOSE
-  ].join('');
-};
-
 module.exports = formatFactory({
   WS:           ' ',
   K_IF:         'if',
@@ -77,15 +45,15 @@ module.exports = formatFactory({
   accessor:     abs.accessor,
 
   Add:          abs.Operator('+'),
-  Block:        Block,
+  Block:        abs.Block,
   Compare:      abs.Compare,
   Div:          abs.Operator('/'),
-  Extends:      Extends,
+  Extends:      abs.Extends,
   Filter:       Filter,
   For:          abs.For,
   Group:        abs.Group,
   If:           abs.If,
-  Include:      Include,
+  Include:      abs.Include,
   Literal:      abs.Literal,
   LookupVal:    abs.LookupVal,
   Mul:          abs.Operator('*'),

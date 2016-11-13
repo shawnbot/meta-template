@@ -105,6 +105,38 @@ const Symbol = function(node) {
   return node.value;
 };
 
+const Block = function(node) {
+  return [
+    this.C_OPEN, this.WS,
+    this.K_BLOCK, this.WS,
+    this.node(node.name), this.WS,
+    this.C_CLOSE,
+    this.node(node.body),
+    this.C_OPEN, this.WS,
+    this.K_END_BLOCK, this.WS,
+    this.C_CLOSE,
+  ].join('');
+};
+
+const Extends = function(node) {
+  return [
+    this.C_OPEN, this.WS,
+    this.K_EXTENDS, this.WS,
+    this.node(node.template), this.WS,
+    this.C_CLOSE
+  ].join('');
+};
+
+const Include = function(node) {
+  return [
+    this.C_OPEN, this.WS,
+    this.K_INCLUDE, this.WS,
+    this.node(node.template), this.WS,
+    // TODO: support 'ignore missing'?
+    this.C_CLOSE
+  ].join('');
+};
+
 const Compare = function(node) {
   return [
     this.node(node.expr),
@@ -188,10 +220,13 @@ module.exports = {
   quote:        quote,
   accessor:     accessor,
 
+  Block:        Block,
   Compare:      Compare,
+  Extends:      Extends,
   For:          For,
   Group:        Group,
   If:           If,
+  Include:      Include,
   Literal:      Literal,
   LookupVal:    LookupVal,
   NodeList:     NodeList,
