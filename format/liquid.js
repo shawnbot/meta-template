@@ -74,10 +74,9 @@ const Set = function(node) {
 };
 
 const Symbol = function(node) {
-  switch (node.value) {
-    case 'null':
-      node.value = 'nil';
-      break;
+  const value = node.value;
+  if (value in this.symbolAliases) {
+    node.value = this.symbolAliases[value];
   }
   return abs.Symbol.call(this, node);
 };
@@ -121,6 +120,10 @@ module.exports = formatFactory({
     '===': '==',
   },
 
+  symbolAliases: {
+    'null': 'nil',
+  },
+
   builtinFilters: {
     'abs': true,
     'append': true,
@@ -142,6 +145,7 @@ module.exports = formatFactory({
     'minus': true,
     'modulo': true,
     'newline_to_br': true,
+    'nl2br': 'newline_to_br',
     'plus': true,
     'prepend': true,
     'remove': true,
