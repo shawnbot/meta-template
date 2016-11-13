@@ -59,6 +59,12 @@ const Operator = (symbol) => {
   };
 };
 
+const Group = function(node) {
+  return '(' + node.children
+    .map(child => this.node(child))
+    .join(this.WS) + ')';
+};
+
 module.exports = formatFactory({
   WS:           ' ',
   K_IF:         'if',
@@ -93,6 +99,7 @@ module.exports = formatFactory({
   Extends:      Extends,
   Filter:       Filter,
   For:          abs.For,
+  Group:        Group,
   If:           abs.If,
   Include:      Include,
   Literal:      abs.Literal,

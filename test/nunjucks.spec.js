@@ -97,6 +97,13 @@ describe('default format (nunjucks -> nunjucks)', function() {
         '{{ foo / bar * 2 - 1 }}',
       ]);
     });
+
+    describe('parenthesis grouping', function() {
+      assertFormats([
+        '{{ foo + (bar + 1) }}',
+        '{{ foo / (bar + 1) }}',
+      ]);
+    });
   });
 
   describe('include nodes', function() {
