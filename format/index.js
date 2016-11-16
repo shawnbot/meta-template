@@ -29,4 +29,5 @@ module.exports = {
   jinja: require('./jinja'),
   handlebars: require('./handlebars'),
   php: require('./php'),
+  erb: require('./erb'),
 };
