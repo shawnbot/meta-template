@@ -47,6 +47,7 @@ module.exports = formatFactory({
   K_ELSE:       'else',
   K_ELSE_IF:    'elif',       // NB: 'elseif' is also allowed
   K_END_IF:     'endif',
+  K_NOT:        'not',
   K_FOR:        'for',
   K_END_FOR:    'endfor',
   K_FOR_IN:     'in',
@@ -85,6 +86,7 @@ module.exports = formatFactory({
   LookupVal:    abs.LookupVal,
   Mul:          abs.Operator('*'),
   NodeList:     abs.NodeList,
+  Not:          abs.Not,
   Or:           abs.Operator('or'),
   Output:       abs.Output,
   Root:         abs.NodeList,

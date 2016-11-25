@@ -79,6 +79,11 @@ describe('default format (nunjucks -> erb)', function() {
       "{% if z %}yes{% else %}{% if y %}maybe{% else %}no{% endif %}{% endif %}",
       "<% if z %>yes<% else %><% if y %>maybe<% else %>no<% end %><% end %>"
     );
+
+    assert.formatEquals(
+      "{% if not foo %}yes{% endif %}",
+      "<% if not foo %>yes<% end %>"
+    );
   });
 
   describe('literals', function() {

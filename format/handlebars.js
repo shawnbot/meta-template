@@ -4,11 +4,20 @@ const invariant = require('invariant');
 const formatFactory = require('./factory');
 
 const If = function(node) {
-  this._chomp(node.cond);
+  let K_IF = this.K_IF;
+
+  if (node.cond.type == 'Not') {
+    K_IF = this.K_IF_NOT
+    this._chomp(node.cond.target);
+  }
+  else {
+    this._chomp(node.cond);
+  }
+
 
   const parts = [
     this.C_OPEN,
-    this.K_IF, this.WS,
+    K_IF, this.WS,
     this.node(node.cond),
     this.C_CLOSE,
     this.node(node.body)
@@ -30,7 +39,7 @@ const If = function(node) {
     this.K_END_IF,
     this.C_CLOSE
   );
-  
+
   return parts.join('');
 };
 
@@ -151,7 +160,8 @@ module.exports = formatFactory({
   O_CLOSE:      '}}}',
 
   K_IF:         '#if ',
-  K_ELSE:       '^',
+  K_IF_NOT:     '^if ',
+  K_ELSE:       'else',
   K_END_IF:     '/if',
 
   K_EACH:       '#each ',
@@ -174,6 +184,7 @@ module.exports = formatFactory({
   Literal:      abs.Literal,
   LookupVal:    LookupVal,
   NodeList:     abs.NodeList,
+  Not:          abs.Not,
   Output:       abs.Output,
   Root:         abs.Root,
   Symbol:       Symbol,
