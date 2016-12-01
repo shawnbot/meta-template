@@ -19,6 +19,16 @@ describe('handlebars output', function() {
       assert.formatEquals('{{ x }}', '{{{x}}}');
     });
 
+    describe('formats if conditionals', function() {
+      assert.formatEquals('{% if z %}yes{% endif %}', '{{#if z}}yes{{/if}}');
+      assert.formatEquals('{% if z %}yes{% else %}no{% endif %}', '{{#if z}}yes{{else}}no{{/if}}');
+
+      // comparisons not supported in handlebars :(
+      // assert.formatEquals('{% if z == 'bar' %}yes{% endif %}', '{{#if z}}yes{{/if}}');
+
+      assert.formatEquals('{% if not z %}yes{% endif %}', '{{^if z}}yes{{/if}}');
+    });
+
     describe('nested properties', function() {
       assert.formatEquals('{{ x.y }}', '{{{x.y}}}');
       assert.formatEquals('{{ x[0] }}', '{{{x.[0]}}}');

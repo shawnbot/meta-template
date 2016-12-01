@@ -57,6 +57,9 @@ describe('default format (nunjucks -> nunjucks)', function() {
       "{% if z %}yes{% elseif y %}maybe{% else %}no{% endif %}",
       "{% if z %}yes{% else %}{% if y %}maybe{% else %}no{% endif %}{% endif %}"
     );
+    assertFormats([
+      "{% if not foo %}yes{% endif %}"
+    ]);
   });
 
   describe('literals', function() {

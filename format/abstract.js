@@ -108,6 +108,14 @@ const NodeList = function(node) {
   return node.children.map(child => this.node(child)).join('');
 };
 
+const Not = function(node) {
+  return [
+      this.K_NOT,
+      this.WS,
+      this.node(node.target)
+  ].join('');
+};
+
 const TemplateData = function(node) {
   return node.value;
 };
@@ -238,6 +246,8 @@ module.exports = {
   K_ELSE_IF:    null,
   // end if
   K_END_IF:     null,
+  // not operator
+  K_NOT:        null,
 
   // for/foreach/each keyword
   K_FOR:        null,
@@ -266,6 +276,7 @@ module.exports = {
   Literal:      Literal,
   LookupVal:    LookupVal,
   NodeList:     NodeList,
+  Not:          Not,
   Operator:     Operator,
   Output:       Output,
   Root:         NodeList,
