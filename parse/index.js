@@ -1,4 +1,5 @@
 'use strict';
+const fs = require('fs');
 const parser = require('nunjucks/src/parser');
 const ast = require('../ast');
 
