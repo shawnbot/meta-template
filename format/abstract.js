@@ -210,12 +210,23 @@ const quote = function(symbol, force) {
   invariant(this.P_WORD instanceof RegExp,
             'quote() requires P_WORD regexp');
 
-  if (this.P_NUMERIC.test(symbol)) {
-    return symbol;
+  switch (typeof symbol) {
+    case 'boolean':
+    case 'number':
+      return symbol;
+
+    case 'string':
+      if (this.P_NUMERIC.test(symbol)) {
+        return symbol;
+      }
+      return (!force && this.P_WORD.test(symbol))
+        ? symbol
+        : "'" + symbol.replace(/'/g, "\\'") + "'";
+
+    default:
+      throw new Error('Unexpected symbol type: ' + (typeof symbol));
   }
-  return (!force && this.P_WORD.test(symbol))
-    ? symbol
-    : "'" + symbol.replace(/'/g, "\\'") + "'";
+
 };
 
 const accessor = function(symbol) {
