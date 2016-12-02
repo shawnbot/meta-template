@@ -1,0 +1,24 @@
+sections:
+
+  - name: output
+    tests:
+      '{{ x }}': '{{{x}}}'
+
+  - name: if conditionals
+    tests:
+      '{% if z %}yes{% endif %}': '{{#if z}}yes{{/if}}'
+      '{% if z %}yes{% else %}no{% endif %}': '{{#if z}}yes{{else}}no{{/if}}'
+      '{% if not z %}yes{% endif %}': '{{^if z}}yes{{/if}}'
+
+  - name: nested properties
+    tests:
+      '{{ x.y }}': '{{{x.y}}}'
+      '{{ x[0] }}': '{{{x.[0]}}}'
+      '{{ x.y[0].z }}': '{{{x.y.[0].z}}}'
+      '{{ x["#foo"] }}': '{{{x.[#foo]}}}'
+
+  - name: invalid expressions
+    invalid:
+      - '{{ x + 1 }}'
+      - '{{ x or y }}'
+      - '{{ (x) }}'
