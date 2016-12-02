@@ -11,39 +11,43 @@ const opts = {
 const parseString = str => parse.string(str, opts);
 
 const runSpec = (filename, format) => {
-  const spec = yaml.safeLoad(fs.readFileSync(filename));
+  const data = yaml.safeLoad(fs.readFileSync(filename));
 
-  assert(Array.isArray(spec.sections),
-         'YAML spec sections should be an array');
+  assert(Array.isArray(data.sections),
+         'YAML data sections should be an array');
 
-  testSections(spec.sections, format);
+  beforeEach(function() {
+    this.format = format;
+  });
+
+  testSections(data.sections);
 };
 
-const testSections = (sections, format) => {
+const testSections = (sections) => {
   sections.forEach(section => {
     const desc = section.pending ? xdescribe : describe;
     desc(section.name, function() {
       if (section.converts) {
-        testConverts(section.converts, format);
+        testConverts(section.converts);
       }
       if (section.invalid) {
-        testInvalid(section.invalid, format);
+        testInvalid(section.invalid);
       }
       if (section.sections) {
-        testSections(section.sections, format);
+        testSections(section.sections);
       }
       if (section.preserves) {
-        testPreserves(section.preserves, format);
+        testPreserves(section.preserves);
       }
     });
   });
 };
 
-const testConverts = (conv, format) => {
+const testConverts = (conv) => {
   const test = (input, output) => {
     it([input, output].join(' => '), function() {
       assert.equal(
-        format(parseString(input)),
+        this.format(parseString(input)),
         output
       );
     });
@@ -58,17 +62,19 @@ const testConverts = (conv, format) => {
   }
 };
 
-const testPreserves = (exprs, format) => {
+const testPreserves = (exprs) => {
   exprs.forEach(expr => {
-    it(expr, function() {
-      assert.equal(format(parseString(expr)), expr);
+    it('preserves: ' + expr, function() {
+      assert.equal(this.format(parseString(expr)), expr);
     });
   });
 };
 
-const testInvalid = (exprs, format) => {
+const testInvalid = (exprs) => {
   exprs.forEach(expr => {
-    assert.throws(() => format(parseString(expr)));
+    it('invalid: ' + expr, function() {
+      assert.throws(() => this.format(parseString(expr)));
+    });
   });
 };
 
