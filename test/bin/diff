@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+'use strict';
+const assert = require('assert');
+const path = require('path');
+const read = require('fs').readFileSync;
+const spawn = require('child_process').spawnSync;
+
+const opts = require('yargs').argv;
+const suite = opts.suite;
+const format = opts.format;
+
+assert(suite, 'You must provide a --suite option');
+assert(format, 'You must provide a --format option');
+
+const fixture =  path.join(__dirname, '../fixtures', suite);
+const paths = {
+  template: path.join(fixture, 'template.njk'),
+  data:     path.join(fixture, 'data.json'),
+  expected: path.join(fixture, 'expected.txt'),
+};
+
+const parse = require('../../parse');
+const fmt = require('../../format').get(format);
+
+parse.file(paths.template, {}, (error, node) => {
+  const template = fmt(node);
+  const data = read(paths.data).toString();
+
+  const render = spawn(path.join(__dirname, format), [
+    template,
+    data
+  ], {
+    encoding: 'utf-8',
+    stdio: ['pipe', 'pipe', process.stderr]
+  });
+
+  const expected = read(paths.expected);
+  assert.equal(
+    render.stdout.toString(),
+    expected.toString()
+  );
+});
+
