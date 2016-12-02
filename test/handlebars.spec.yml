@@ -1,17 +1,17 @@
 sections:
 
   - name: output
-    tests:
+    converts:
       '{{ x }}': '{{{x}}}'
 
   - name: if conditionals
-    tests:
+    converts:
       '{% if z %}yes{% endif %}': '{{#if z}}yes{{/if}}'
       '{% if z %}yes{% else %}no{% endif %}': '{{#if z}}yes{{else}}no{{/if}}'
       '{% if not z %}yes{% endif %}': '{{^if z}}yes{{/if}}'
 
   - name: nested properties
-    tests:
+    converts:
       '{{ x.y }}': '{{{x.y}}}'
       '{{ x[0] }}': '{{{x.[0]}}}'
       '{{ x.y[0].z }}': '{{{x.y.[0].z}}}'
