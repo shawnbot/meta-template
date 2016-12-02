@@ -2,7 +2,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const yaml = require('js-yaml');
-const parse = require('../parse');
+const parse = require('../../parse');
 
 const opts = {
   clean: true
