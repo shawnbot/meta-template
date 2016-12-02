@@ -1,0 +1,81 @@
+sections:
+
+  - name: 'output expressions'
+    converts:
+      "foo {{ bar }} baz": "foo <%= bar %> baz"
+      "foo {{ bar }} baz {{ qux[0] }}": "foo <%= bar %> baz <%= qux[0] %>"
+      "foo {{ bar['baz qux'][1].x }}": "foo <%= bar['baz qux'][1].x %>"
+
+  - name: 'filter tags'
+    converts:
+      "foo {{ bar | qux }} baz": "foo <%= qux(bar) %> baz"
+      "foo {{ bar | qux(1) }} baz": "foo <%= qux(bar, 1) %> baz"
+      "foo {{ bar | qux(1, 'quux', bar.baz[0]) }} baz": "foo <%= qux(bar, 1, 'quux', bar.baz[0]) %> baz"
+
+  - name: 'for..in loops'
+    converts:
+      "{% for x in items %}la {{ x[0] }}{% endfor %}": "<% items.each do |x| %>la <%= x[0] %><% end %>"
+      "{% for x in items.x['foo bar'].qux %}la {{ x[0] }}{% endfor %}": "<% items.x['foo bar'].qux.each do |x| %>la <%= x[0] %><% end %>"
+
+  - name: 'if conditionals'
+    converts:
+      "{% if z %}yes{% endif %}": "<% if z %>yes<% end %>"
+      "{% if z == 'bar' %}yes{% endif %}": "<% if z == 'bar' %>yes<% end %>"
+      "{% if z %}yes{% else %}no{% endif %}": "<% if z %>yes<% else %>no<% end %>"
+      # TODO: add `elsif` support
+      "{% if z %}yes{% elseif y %}maybe{% else %}no{% endif %}": "<% if z %>yes<% else %><% if y %>maybe<% else %>no<% end %><% end %>"
+      "{% if z %}yes{% else %}{% if y %}maybe{% else %}no{% endif %}{% endif %}": "<% if z %>yes<% else %><% if y %>maybe<% else %>no<% end %><% end %>"
+      "{% if not foo %}yes{% endif %}": "<% if not foo %>yes<% end %>"
+
+  - name: 'literals'
+    pending: true
+    converts:
+      "{{ true }}": "<%= true %>"
+      "{{ false }}": "<%= false %>"
+      "{{ null }}": "<%= null %>"
+
+  - name: 'operators'
+    sections:
+      - name: 'add'
+        converts:
+          "{{ foo + bar }}": "<%= foo + bar %>"
+          "{{ foo + 1 }}": "<%= foo + 1 %>"
+          "{{ foo + 1 + bar }}": "<%= foo + 1 + bar %>"
+          "{{ foo + 'bar' }}": "<%= foo + 'bar' %>"
+
+      - name: 'subtract'
+        converts:
+          "{{ foo - bar }}": "<%= foo - bar %>"
+          "{{ foo - 1 }}": "<%= foo - 1 %>"
+
+      - name: 'multiply'
+        converts:
+          "{{ x * 2 }}": "<%= x * 2 %>"
+          "{{ x * y * 2 }}": "<%= x * y * 2 %>"
+
+      - name: 'divide'
+        converts:
+          "{{ x / 2 }}": "<%= x / 2 %>"
+          "{{ x / y }}": "<%= x / y %>"
+
+      - name: 'mixed operators'
+        converts:
+          "{{ foo + bar - 1 }}": "<%= foo + bar - 1 %>"
+          "{{ foo / bar + 2 }}": "<%= foo / bar + 2 %>"
+          "{{ foo / bar * 2 - 1 }}": "<%= foo / bar * 2 - 1 %>"
+
+  - name: 'parenthesis grouping'
+    converts:
+      "{{ foo + (bar + 1) }}": "<%= foo + (bar + 1) %>"
+      "{{ foo / (bar + 1) }}": "<%= foo / (bar + 1) %>"
+
+  - name: 'set local variables'
+    converts:
+      '{% set foo = 1 %}': '<% foo = 1 %>'
+      '{% set foo = x * 2 %}': '<% foo = x * 2 %>'
+
+  - name: 'include nodes'
+    converts:
+      "{% include 'foo' %}": "<%= render partial: 'foo' %>"
+      "{% include foo.bar %}": "<%= render partial: foo.bar %>"
+      "{% include foo + '.html' %}": "<%= render partial: foo + '.html' %>"
