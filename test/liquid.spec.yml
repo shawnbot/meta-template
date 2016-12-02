@@ -1,0 +1,91 @@
+sections:
+
+  - name: 'formats output expressions'
+    preserves:
+      - "foo {{ bar }} baz"
+      - "foo {{ bar }} baz {{ qux[0] }}"
+      - "foo {{ bar['baz qux'][1].x }}"
+
+  - name: 'formats filter tags'
+    preserves:
+      - "foo {{ bar | qux }} baz"
+    converts:
+      "foo {{ bar | qux(1) }} baz": "foo {{ bar | qux: 1 }} baz"
+      "foo {{ bar | qux(1, 'quux', bar.baz[0]) }} baz": "foo {{ bar | qux: 1, 'quux', bar.baz[0] }} baz"
+
+  - name: 'formats for..in loops'
+    preserves:
+      - "{% for x in items %}la {{ x[0] }}{% endfor %}"
+      - "{% for x in items.x['foo bar'].qux %}la {{ x[0] }}{% endfor %}"
+
+  - name: 'formats if conditionals'
+    preserves:
+      - "{% if z %}yes{% endif %}"
+      - "{% if z == 'bar' %}yes{% endif %}"
+      - "{% if z %}yes{% else %}no{% endif %}"
+    converts:
+      "{% if z %}yes{% elif y %}maybe{% else %}no{% endif %}": "{% if z %}yes{% else %}{% if y %}maybe{% else %}no{% endif %}{% endif %}"
+
+  - name: 'simple operators'
+    sections:
+
+    - name: 'add'
+      converts:
+        '{{ x + 1 }}': '{{ x | plus: 1 }}'
+        '{{ x + 1 + y }}': '{{ x | plus: 1 | plus: y }}'
+
+    - name: 'subtract'
+      converts:
+        '{{ x - 1 }}': '{{ x | minus: 1 }}'
+        '{{ x - y - 1 }}': '{{ x | minus: y | minus: 1 }}'
+
+    - name: 'multiply'
+      converts:
+        '{{ x * 2 }}': '{{ x | times: 2 }}'
+        '{{ x * y * 2 }}': '{{ x | times: y | times: 2 }}'
+
+    - name: 'divide'
+      converts:
+        '{{ x / 2 }}': '{{ x | divided_by: 2 }}'
+        '{{ x / y }}': '{{ x | divided_by: y }}'
+
+    - name: 'mixed operators'
+      converts:
+        '{{ x - 1 + y }}': '{{ x | minus: 1 | plus: y }}'
+        '{{ x / 2 + y }}': '{{ x | divided_by: 2 | plus: y }}'
+
+  - name: 'comparator conversion'
+    sections:
+
+      - name: 'replaces === with =='
+        converts:
+          '{{ x === 1 }}': '{{ x == 1 }}'
+
+  - name: 'symbol aliases'
+    sections:
+
+      - name: 'replaces null with nil'
+        converts:
+          '{{ x == null }}': '{{ x == nil }}'
+
+  - name: 'builtin filter name aliases'
+    converts:
+      '{{ x | striptags }}': '{{ x | strip_html }}'
+      '{{ x | urlencode }}': '{{ x | url_encode }}'
+      '{{ x | upper }}': '{{ x | upcase }}'
+      '{{ x | lower }}': '{{ x | downcase }}'
+      '{{ x | title }}': '{{ x | capitalize }}'
+      '{{ x | nl2br }}': '{{ x | newline_to_br }}'
+
+  - name: 'set node conversion'
+    sections:
+
+      - name: 'subs set for assign'
+        converts:
+          '{% set foo = 1 %}': '{% assign foo = 1 %}'
+          '{% set foo = x * 2 %}': '{% assign foo = x | times: 2 %}'
+
+      - name: 'uses capture when there is no assignment'
+        converts:
+          '{% set foo %}1{% endset %}': '{% capture foo %}1{% endcapture %}'
+          '{% set foo %}{{ x * 2 }}{% endset %}': '{% capture foo %}{{ x | times: 2 }}{% endcapture %}'

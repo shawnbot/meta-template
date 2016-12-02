@@ -100,6 +100,8 @@ module.exports = liquid.extend({
     'wordcount':  'number_of_words',
   }),
 
+  BLOCK_VAR_PREFIX: 'block__',
+
   Include:      Include,
   Root:         Root,
 });

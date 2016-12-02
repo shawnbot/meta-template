@@ -1,0 +1,16 @@
+sections:
+
+  - name: 'block node conversion'
+    sections:
+
+      - name: 'without {% extends %}'
+        converts:
+          "{% block x %}hi{% endblock %}": "{% if block__x %}{{ block__x }}{% else %}hi{% endif %}"
+
+      - name: 'with {% extends %}'
+        converts:
+          "{% extends 'a' %}{% block x %}hi{% endblock %}": "{% capture block__x %}hi{% endcapture %}{% include 'a' %}"
+
+  - name: 'builtin filter name aliases'
+    converts:
+      '{{ x | dump }}': '{{ x | jsonify }}'
