@@ -1,0 +1,11 @@
+sections:
+
+  - name: 'operator substitution'
+    converts:
+      '{{ foo === 1 }}': '{{ foo == 1 }}'
+
+  - name: 'Python literal substitution'
+    converts:
+      '{{ foo == true }}': '{{ foo == True }}'
+      '{{ bar == false }}': '{{ bar == False }}'
+      '{{ bar == null }}': '{{ bar == None }}'
