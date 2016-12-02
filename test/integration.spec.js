@@ -12,6 +12,7 @@ const FIXTURES = [
 
 const FORMATS = [
   'nunjucks',
+  'handlebars',
   'liquid',
 ];
 

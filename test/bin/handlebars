@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-const op = require('yargs').argv;
-const fs = require('fs');
+const args = process.argv.slice(2);
+const template = args.shift();
+const data = JSON.parse(args.shift());
 
-const template = fs.readFileSync('/dev/stdin').toString();
-const data = JSON.parse(fs.readFileSync(op.data).toString());
 const render = require('handlebars').compile(template);
 
-console.log(render(data));
+process.stdout.write(render(data));
