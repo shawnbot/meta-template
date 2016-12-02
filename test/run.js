@@ -24,7 +24,7 @@ const testSections = (sections, format) => {
     const desc = section.pending ? xdescribe : describe;
     desc(section.name, function() {
       if (section.converts) {
-        testConversions(section.converts, format);
+        testConverts(section.converts, format);
       }
       if (section.invalid) {
         testInvalid(section.invalid, format);
@@ -32,11 +32,14 @@ const testSections = (sections, format) => {
       if (section.sections) {
         testSections(section.sections, format);
       }
+      if (section.preserves) {
+        testPreserves(section.preserves, format);
+      }
     });
   });
 };
 
-const testConversions = (conv, format) => {
+const testConverts = (conv, format) => {
   const test = (input, output) => {
     it([input, output].join(' => '), function() {
       assert.equal(
@@ -53,6 +56,14 @@ const testConversions = (conv, format) => {
       test(input, conv[input]);
     });
   }
+};
+
+const testPreserves = (exprs, format) => {
+  exprs.forEach(expr => {
+    it(expr, function() {
+      assert.equal(format(parseString(expr)), expr);
+    });
+  });
 };
 
 const testInvalid = (exprs, format) => {
