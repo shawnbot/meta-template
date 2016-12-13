@@ -43,6 +43,13 @@ describe('default format (nunjucks -> erb)', function() {
       "foo {{ bar | qux(1, 'quux', bar.baz[0]) }} baz",
       "foo <%= qux(bar, 1, 'quux', bar.baz[0]) %> baz"
     );
+
+    describe('filter aliases', function() {
+      assert.formatEquals(
+        "foo {{ bar | safe }} baz",
+        "foo <%= raw(bar) %> baz"
+      );
+    });
   });
 
   describe('formats for..in loops', function() {
