@@ -107,7 +107,7 @@ This project is in its infancy, but here is a very rough roadmap:
 - [ ] Determine the "lowest common denominator" set of template features to
   support in parsing so that we can warn when source templates use features
   that aren't available in the desired output format(s)
-- [ ] Make a command line tool
+- [x] Make a command line tool
 - [ ] Write some API docs
 - [ ] Profit?
 
