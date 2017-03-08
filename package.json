@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Transform Nunjucks templates into other formats",
   "main": "index.js",
+  "bin": {
+    "meta-template": "bin/parse.js"
+  },
   "scripts": {
     "postinstall": "bundle",
     "test": "mocha test/**/*.spec.js",
