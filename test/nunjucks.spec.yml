@@ -1,4 +1,6 @@
-sections:
+name: Nunjucks (noop)
+
+tests:
 
   - name: 'output expressions'
     preserves:
@@ -27,7 +29,7 @@ sections:
       - "{% if not foo %}yes{% endif %}"
 
   - name: 'literals'
-    sections:
+    tests:
       - name: 'does not quote true, false, or null'
         preserves:
           - '{{ true }}'
@@ -35,7 +37,7 @@ sections:
           - '{{ null }}'
 
   - name: 'operators'
-    sections:
+    tests:
       - name: 'add'
         preserves:
           - '{{ foo + bar }}'

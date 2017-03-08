@@ -1,4 +1,6 @@
-sections:
+name: Jinja2
+
+tests:
 
   - name: 'operator substitution'
     converts:

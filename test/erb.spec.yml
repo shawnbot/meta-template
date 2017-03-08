@@ -1,4 +1,6 @@
-sections:
+name: ERB
+
+tests:
 
   - name: 'output expressions'
     converts:
@@ -39,7 +41,7 @@ sections:
       "{{ null }}": "<%= null %>"
 
   - name: 'operators'
-    sections:
+    tests:
       - name: 'add'
         converts:
           "{{ foo + bar }}": "<%= foo + bar %>"

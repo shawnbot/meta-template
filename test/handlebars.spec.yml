@@ -1,4 +1,6 @@
-sections:
+name: Handlebars
+
+tests:
 
   - name: output
     converts:

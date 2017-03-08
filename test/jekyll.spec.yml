@@ -1,7 +1,9 @@
-sections:
+name: Jekyll
+
+tests:
 
   - name: 'block node conversion'
-    sections:
+    tests:
 
       - name: 'without {% extends %}'
         converts:

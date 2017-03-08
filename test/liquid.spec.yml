@@ -1,4 +1,6 @@
-sections:
+name: Liquid
+
+tests:
 
   - name: 'formats output expressions'
     preserves:
@@ -27,7 +29,7 @@ sections:
       "{% if z %}yes{% elif y %}maybe{% else %}no{% endif %}": "{% if z %}yes{% else %}{% if y %}maybe{% else %}no{% endif %}{% endif %}"
 
   - name: 'simple operators'
-    sections:
+    tests:
 
     - name: 'add'
       converts:
@@ -55,14 +57,14 @@ sections:
         '{{ x / 2 + y }}': '{{ x | divided_by: 2 | plus: y }}'
 
   - name: 'comparator conversion'
-    sections:
+    tests:
 
       - name: 'replaces === with =='
         converts:
           '{{ x === 1 }}': '{{ x == 1 }}'
 
   - name: 'symbol aliases'
-    sections:
+    tests:
 
       - name: 'replaces null with nil'
         converts:
@@ -78,7 +80,7 @@ sections:
       '{{ x | nl2br }}': '{{ x | newline_to_br }}'
 
   - name: 'set node conversion'
-    sections:
+    tests:
 
       - name: 'subs set for assign'
         converts:
