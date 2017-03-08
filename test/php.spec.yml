@@ -1,0 +1,124 @@
+name: PHP
+
+tests:
+
+  - name: 'formats output expressions'
+    converts:
+      - from: "foo {{ bar }} baz"
+        to:   "foo <?= $bar ?> baz"
+      - from: "foo {{ bar }} baz {{ qux[0] }}"
+        to:   "foo <?= $bar ?> baz <?= $qux[0] ?>"
+      - from: "foo {{ bar['baz qux'][1].x }}"
+        to:   "foo <?= $bar['baz qux'][1]['x'] ?>"
+
+  - name: 'formats filter tags'
+    converts:
+      - from: "foo {{ bar | qux }} baz"
+        to:   "foo <?= qux($bar) ?> baz"
+      - from: "foo {{ bar | qux(1) }} baz"
+        to:   "foo <?= qux($bar, 1) ?> baz"
+      - from: "foo {{ bar | qux(1, 'quux', bar.baz[0]) }} baz"
+        to:   "foo <?= qux($bar, 1, 'quux', $bar['baz'][0]) ?> baz"
+
+  - name: 'formats for..in loops'
+    converts:
+      - from: "{% for x in items %}la {{ x[0] }}{% endfor %}"
+        to:   "<?php foreach ($x in $items): ?>la <?= $x[0] ?><?php endforeach; ?>"
+      - from: "{% for x in items.x['foo bar'].qux %}la {{ x[0] }}{% endfor %}"
+        to:   "<?php foreach ($x in $items['x']['foo bar']['qux']): ?>la <?= $x[0] ?><?php endforeach; ?>"
+
+  - name: 'formats if conditionals'
+    converts:
+      - from: "{% if z %}yes{% endif %}"
+        to:   "<?php if ($z): ?>yes<?php endif; ?>"
+      - from: "{% if z == 'bar' %}yes{% endif %}"
+        to:   "<?php if ($z == 'bar'): ?>yes<?php endif; ?>"
+      - from: "{% if z %}yes{% else %}no{% endif %}"
+        to:   "<?php if ($z): ?>yes<?php else: ?>no<?php endif; ?>"
+      - from: "{% if z %}yes{% elif y %}maybe{% else %}no{% endif %}"
+        to:   "<?php if ($z): ?>yes<?php else: ?><?php if ($y): ?>maybe<?php else: ?>no<?php endif; ?><?php endif; ?>"
+
+  - name: 'simple operators'
+    tests:
+
+    - name: 'add'
+      converts:
+        - from: '{{ x + 1 }}'
+          to:   '<?= $x + 1 ?>'
+        - from: '{{ x + 1 + y }}'
+          to:   '<?= $x + 1 + $y ?>'
+
+    - name: 'subtract'
+      converts:
+        - from: '{{ x - 1 }}'
+          to:   '<?= $x - 1 ?>'
+        - from: '{{ x - y - 1 }}'
+          to:   '<?= $x - $y - 1 ?>'
+
+    - name: 'multiply'
+      converts:
+        - from: '{{ x * 2 }}'
+          to:   '<?= $x * 2 ?>'
+        - from: '{{ x * y * 2 }}'
+          to:   '<?= $x * $y * 2 ?>'
+
+    - name: 'divide'
+      converts:
+        - from: '{{ x / 2 }}'
+          to:   '<?= $x / 2 ?>'
+        - from: '{{ x / y }}'
+          to:   '<?= $x / $y ?>'
+
+    - name: 'mixed operators'
+      converts:
+        - from: '{{ x - 1 + y }}'
+          to:   '<?= $x - 1 + $y ?>'
+        - from: '{{ x / 2 + y }}'
+          to:   '<?= $x / 2 + $y ?>'
+
+  - name: 'comparator conversion'
+    tests:
+      - name: 'preserves ==='
+        converts:
+          from: '{{ x === 1 }}'
+          to:   '<?= $x === 1 ?>'
+
+  - name: 'symbol aliases'
+    tests:
+
+      - name: 'replaces null with NULL'
+        converts:
+          from: '{{ x == null }}'
+          to:   '<?= $x == NULL ?>'
+
+  - name: 'builtin filter name aliases'
+    converts:
+      - from: '{{ x | striptags }}'
+        to:   '<?= strip_tags($x) ?>'
+      - from: '{{ x | urlencode }}'
+        to:   '<?= urlencode($x) ?>'
+      - from: '{{ x | upper }}'
+        to:   '<?= strtoupper($x) ?>'
+      - from: '{{ x | lower }}'
+        to:   '<?= strtolower($x) ?>'
+      - from: '{{ x | nl2br }}'
+        to:   '<?= nl2br($x) ?>'
+      - from: '{{ x | title }}'
+        pending: true
+
+  - name: 'set node conversion'
+    tests:
+
+      - name: 'subs set for assign'
+        converts:
+          - from: '{% set foo = 1 %}'
+            to:   '<?php $foo = 1; ?>'
+          - from: '{% set foo = x * 2 %}'
+            to:   '<?php $foo = $x * 2; ?>'
+
+      - name: 'uses capture when there is no assignment'
+        converts:
+          - from: '{% set foo %}x{% endset %}'
+            to:   '<?php ob_start(PHP_OUTPUT_HANDLER_FLUSHABLE); ?>x<?php $foo = ob_get_flush(); ?>'
+          - from: '{% set foo %}x * 2 = {{ x * 2 }}{% endset %}'
+            to:   '<?php ob_start(PHP_OUTPUT_HANDLER_FLUSHABLE); ?>x * 2 = <?= $x * 2 ?><?php $foo = ob_get_flush(); ?>'

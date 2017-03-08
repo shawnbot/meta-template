@@ -95,8 +95,8 @@ const methods = {
    * @return {void}
    */
   converts: (conv) => {
-    const test = (input, output) => {
-      it(`converts: "${input}"`, function() {
+    const test = (input, output, pending) => {
+      (pending ? xit : it)(`converts: "${input}"`, function() {
         assert.equal(
           this.format(parseString(input)),
           output
@@ -104,8 +104,8 @@ const methods = {
       });
     };
 
-    if (Array.isArray(conv)) {
-      conv.forEach(io => test(io.from, io.to));
+    if (conv.from || conv.to || conv.pending) {
+      test(conv.from, conv.to, conv.pending);
     } else {
       Object.keys(conv).forEach(input => {
         test(input, conv[input]);

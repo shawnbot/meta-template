@@ -4,6 +4,6 @@ const path = require('path');
 const runSpec = require('./lib/run-spec');
 
 runSpec(
-  path.join(__dirname, 'jinja.spec.yml'),
-  format.jinja
+  path.join(__dirname, 'php.spec.yml'),
+  format.php
 );

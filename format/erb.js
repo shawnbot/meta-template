@@ -73,7 +73,7 @@ module.exports = formatFactory({
   accessor:     abs.accessor,
 
   filterAliasMap: {
-    'safe': 'raw'
+    'safe': 'raw',
   },
 
   literalAliases: {
