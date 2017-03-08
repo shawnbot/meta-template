@@ -13,8 +13,9 @@ const Include = function(node) {
 };
 
 const Filter = function(node) {
+  const name = this.filterAliasMap[node.name.value] || node.name.value;
   return [
-      this.node(node.name),
+      name,
       '(',
       node.args.children.map(arg => this.node(arg)).join(', '),
       ')'
@@ -70,6 +71,10 @@ module.exports = formatFactory({
 
   quote:        abs.quote,
   accessor:     abs.accessor,
+
+  filterAliasMap: {
+    'safe': 'raw'
+  },
 
   Add:          abs.Operator('+'),
   Compare:      abs.Compare,
