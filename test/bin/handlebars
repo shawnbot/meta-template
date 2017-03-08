@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+const args = process.argv.slice(2);
+const template = args.shift();
+const data = JSON.parse(args.shift());
+
+const render = require('handlebars').compile(template);
+
+process.stdout.write(render(data));

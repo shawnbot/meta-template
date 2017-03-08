@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+const njk = require('nunjucks');
+const fs = require('fs');
+
+const args = process.argv.slice(2);
+const template = args.shift();
+const data = JSON.parse(args.shift());
+
+process.stdout.write(njk.renderString(template, data));
