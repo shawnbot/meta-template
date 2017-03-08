@@ -13,7 +13,8 @@ const If = function(node) {
   if (node.else_) {
     // TODO: produce elseif expressions, rather than nested if/else
     parts.push(
-      this.C_OPEN, 'else:', this.WS,
+      this.C_OPEN, this.WS,
+      'else:', this.WS,
       this.C_CLOSE,
       this.node(node.else_)
     );
@@ -84,15 +85,19 @@ module.exports = formatFactory({
   quote:        abs.quote,
   accessor:     accessor,
 
+  Add:          abs.Operator('+'),
   Compare:      abs.Compare,
+  Div:          abs.Operator('/'),
   If:           If,
   Filter:       Filter,
   For:          For,
   Literal:      abs.Literal,
   LookupVal:    abs.LookupVal,
+  Mul:          abs.Operator('*'),
   NodeList:     abs.NodeList,
   Output:       abs.Output,
   Root:         abs.NodeList,
+  Sub:          abs.Operator('-'),
   Symbol:       Symbol,
   TemplateData: abs.TemplateData
 });

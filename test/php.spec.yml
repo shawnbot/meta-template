@@ -32,43 +32,49 @@ tests:
       - from: "{% if z %}yes{% endif %}"
         to:   "<?php if ($z): ?>yes<?php endif; ?>"
       - from: "{% if z == 'bar' %}yes{% endif %}"
-        to:   ""
-        pending: true
+        to:   "<?php if ($z == 'bar'): ?>yes<?php endif; ?>"
       - from: "{% if z %}yes{% else %}no{% endif %}"
-        to:   ""
-        pending: true
+        to:   "<?php if ($z): ?>yes<?php else: ?>no<?php endif; ?>"
       - from: "{% if z %}yes{% elif y %}maybe{% else %}no{% endif %}"
-        to:   "{% if z %}yes{% else %}{% if y %}maybe{% else %}no{% endif %}{% endif %}"
-        pending: true
+        to:   "<?php if ($z): ?>yes<?php else: ?><?php if ($y): ?>maybe<?php else: ?>no<?php endif; ?><?php endif; ?>"
 
   - name: 'simple operators'
-    pending: true
     tests:
 
     - name: 'add'
       converts:
-        '{{ x + 1 }}': '{{ x | plus: 1 }}'
-        '{{ x + 1 + y }}': '{{ x | plus: 1 | plus: y }}'
+        - from: '{{ x + 1 }}'
+          to:   '<?= $x + 1 ?>'
+        - from: '{{ x + 1 + y }}'
+          to:   '<?= $x + 1 + $y ?>'
 
     - name: 'subtract'
       converts:
-        '{{ x - 1 }}': '{{ x | minus: 1 }}'
-        '{{ x - y - 1 }}': '{{ x | minus: y | minus: 1 }}'
+        - from: '{{ x - 1 }}'
+          to:   '<?= $x - 1 ?>'
+        - from: '{{ x - y - 1 }}'
+          to:   '<?= $x - $y - 1 ?>'
 
     - name: 'multiply'
       converts:
-        '{{ x * 2 }}': '{{ x | times: 2 }}'
-        '{{ x * y * 2 }}': '{{ x | times: y | times: 2 }}'
+        - from: '{{ x * 2 }}'
+          to:   '<?= $x * 2 ?>'
+        - from: '{{ x * y * 2 }}'
+          to:   '<?= $x * $y * 2 ?>'
 
     - name: 'divide'
       converts:
-        '{{ x / 2 }}': '{{ x | divided_by: 2 }}'
-        '{{ x / y }}': '{{ x | divided_by: y }}'
+        - from: '{{ x / 2 }}'
+          to:   '<?= $x / 2 ?>'
+        - from: '{{ x / y }}'
+          to:   '<?= $x / $y ?>'
 
     - name: 'mixed operators'
       converts:
-        '{{ x - 1 + y }}': '{{ x | minus: 1 | plus: y }}'
-        '{{ x / 2 + y }}': '{{ x | divided_by: 2 | plus: y }}'
+        - from: '{{ x - 1 + y }}'
+          to:   '<?= $x - 1 + $y ?>'
+        - from: '{{ x / 2 + y }}'
+          to:   '<?= $x / 2 + $y ?>'
 
   - name: 'comparator conversion'
     pending: true
