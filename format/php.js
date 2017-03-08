@@ -29,10 +29,10 @@ const For = function(node) {
   const parts = [
     this.C_OPEN, this.WS,
     'foreach (',
-    this.node(node.arr), this.WS,
-    'in', this.WS,
     this.node(node.name),
-    ')', this.WS,
+    this.WS, 'in', this.WS,
+    this.node(node.arr),
+    '):', this.WS,
     this.C_CLOSE
   ];
 
@@ -46,20 +46,19 @@ const For = function(node) {
   ]).join('');
 };
 
-const Symbol = function(node) {
-  const prefix = node.parent && ast.getNodeType(node.parent) === 'Filter'
-    ? ''
-    : this.VAR_PREFIX;
-  return prefix + node.value;
+const Symbol = function(node, variable) {
+  return variable === false
+    ? node.value
+    : this.VAR_PREFIX + node.value;
 };
 
 const Filter = function(node) {
   // XXX: render as a Call expression?
   const args = node.args.children;
   return [
-    this.node(node.name, node),
+    this.Symbol(node.name, false),
     '(',
-    args.map(arg => this.node(arg, node)).join(', '),
+    args.map(arg => this.node(arg)).join(', '),
     ')'
   ].join('');
 };
