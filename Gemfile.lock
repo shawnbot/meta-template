@@ -1,0 +1,14 @@
+GEM
+  specs:
+    liquid (3.0.6)
+    liquid-cli (0.0.1)
+      liquid
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  liquid-cli
+
+BUNDLED WITH
+   1.13.6
