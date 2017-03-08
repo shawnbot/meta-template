@@ -73,6 +73,58 @@ const Set = function(node) {
   }
 };
 
+const builtinFilters = {
+  'abs': true,
+  'append': true,
+  'capitalize': true,
+  'ceil': true,
+  'date': true,
+  'default': true,
+  'divided_by': true,
+  'downcase': true,
+  'escape': true,
+  'escape_once': true,
+  'first': true,
+  'floor': true,
+  'join': true,
+  'last': true,
+  'lstrip': true,
+  'map': true,
+  'minus': true,
+  'modulo': true,
+  'newline_to_br': true,
+  'plus': true,
+  'prepend': true,
+  'remove': true,
+  'remove_first': true,
+  'replace': true,
+  'replace_first': true,
+  'reverse': true,
+  'round': true,
+  'rstrip': true,
+  'size': true,
+  'slice': true,
+  'sort': true,
+  'split': true,
+  'strip': true,
+  'strip_html': true,
+  'strip_newlines': true,
+  'times': true,
+  'truncate': true,
+  'truncatewords': true,
+  'uniq': true,
+  'upcase': true,
+  'url_encode': true,
+
+  // aliases
+  'lower':      'downcase',
+  'nl2br':      'newline_to_br',
+  'striptags':  'strip_html',
+  'title':      'capitalize',
+  'upper':      'upcase',
+  'urlencode':  'url_encode',
+};
+
 module.exports = formatFactory({
   // whitespace
   WS:           ' ',
@@ -99,8 +151,6 @@ module.exports = formatFactory({
 
   FILTER_DELIM: '|',
 
-  BLOCK_VAR_PREFIX: 'block__',
-
   // quote patterns
   P_NUMERIC:    abs.P_NUMERIC,
   P_WORD:       abs.P_WORD,
@@ -116,56 +166,7 @@ module.exports = formatFactory({
     'null': 'nil',
   },
 
-  builtinFilters: {
-    'abs': true,
-    'append': true,
-    'capitalize': true,
-    'ceil': true,
-    'date': true,
-    'default': true,
-    'divided_by': true,
-    'downcase': true,
-    'escape': true,
-    'escape_once': true,
-    'first': true,
-    'floor': true,
-    'join': true,
-    'last': true,
-    'lstrip': true,
-    'map': true,
-    'minus': true,
-    'modulo': true,
-    'newline_to_br': true,
-    'plus': true,
-    'prepend': true,
-    'remove': true,
-    'remove_first': true,
-    'replace': true,
-    'replace_first': true,
-    'reverse': true,
-    'round': true,
-    'rstrip': true,
-    'size': true,
-    'slice': true,
-    'sort': true,
-    'split': true,
-    'strip': true,
-    'strip_html': true,
-    'strip_newlines': true,
-    'times': true,
-    'truncate': true,
-    'truncatewords': true,
-    'uniq': true,
-    'upcase': true,
-    'url_encode': true,
-    // aliases
-    'lower':      'downcase',
-    'nl2br':      'newline_to_br',
-    'striptags':  'strip_html',
-    'title':      'capitalize',
-    'upper':      'upcase',
-    'urlencode':  'url_encode',
-  },
+  builtinFilters: builtinFilters,
 
   Add:          Operator('plus'),
   Assign:       Assign,
@@ -186,3 +187,7 @@ module.exports = formatFactory({
   Symbol:       abs.Symbol,
   TemplateData: abs.TemplateData
 });
+
+// XXX this is a hack to make the builtins accessible
+// to Jekyll
+module.exports.builtinFilters = builtinFilters;

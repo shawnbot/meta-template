@@ -76,6 +76,10 @@ module.exports = formatFactory({
     'safe': 'raw'
   },
 
+  literalAliases: {
+    'null': 'nil',
+  },
+
   Add:          abs.Operator('+'),
   Compare:      abs.Compare,
   Div:          abs.Operator('/'),

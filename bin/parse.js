@@ -4,13 +4,14 @@
 const yargs = require('yargs');
 const options = yargs
   .alias('c', 'clean')
+  .alias('f', 'format')
   .alias('t', 'trim')
   .alias('v', 'verbose')
   .argv;
 const args = options._;
 
-const ast = require('../ast');
 const concat = require('concat-stream');
+const ast = require('../ast');
 const format = require('../format');
 const parse = require('../parse');
 
@@ -25,12 +26,13 @@ if (options.format) {
 if (args.length) {
   args.forEach(filename => {
     parse.file(filename, options, (error, node) => {
-      console.log(filename, '=>\n', fmt(node));
+      // console.warn(filename);
+      process.stdout.write(fmt(node));
     });
   });
 } else {
   process.stdin.pipe(concat(buffer => {
     const node = parse.buffer(buffer, options);
-    console.log(fmt(node));
+    process.stdout.write(fmt(node));
   }));
 }

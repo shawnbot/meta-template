@@ -1,6 +1,8 @@
 'use strict';
 const invariant = require('invariant');
 
+const NULL = 'null';
+
 const If = function(node) {
   invariant(this.K_IF, 'Encountered If without K_IF');
   invariant(this.K_END_IF, 'Encountered If without K_END_IF');
@@ -61,7 +63,7 @@ const LookupVal = function(node) {
             'Encountered LookupVal without accessor() method');
 
   const stack = [node.val.value];
-  var target = node.target;
+  let target = node.target;
   while (target.type === 'LookupVal') {
     stack.unshift(target.val.value);
     target = target.target;
@@ -91,7 +93,7 @@ const Literal = function(node) {
 
 const Output = function(node) {
   return node.children.map(child => {
-    var out = this.node(child, node);
+    let out = this.node(child, node);
     if (child.type === 'TemplateData') {
       return out;
     } else {
@@ -121,7 +123,11 @@ const TemplateData = function(node) {
 };
 
 const Symbol = function(node) {
-  return node.value;
+  let value = node.value;
+  if (value === NULL && this.literalAliases) {
+    return this.literalAliases[value] || value;
+  }
+  return value;
 };
 
 const Block = function(node) {
@@ -157,8 +163,8 @@ const Include = function(node) {
 };
 
 const Compare = function(node) {
-  var type = node.ops[0].type;
-  var alias = this.operatorAliases ? this.operatorAliases[type] : null;
+  let type = node.ops[0].type;
+  let alias = this.operatorAliases ? this.operatorAliases[type] : null;
   if (alias) {
     type = alias;
   }
@@ -210,12 +216,23 @@ const quote = function(symbol, force) {
   invariant(this.P_WORD instanceof RegExp,
             'quote() requires P_WORD regexp');
 
-  if (this.P_NUMERIC.test(symbol)) {
-    return symbol;
+  switch (typeof symbol) {
+    case 'boolean':
+    case 'number':
+      return symbol;
+
+    case 'string':
+      if (this.P_NUMERIC.test(symbol)) {
+        return symbol;
+      }
+      return (!force && this.P_WORD.test(symbol))
+        ? symbol
+        : "'" + symbol.replace(/'/g, "\\'") + "'";
+
+    default:
+      throw new Error('Unexpected symbol type: ' + (typeof symbol));
   }
-  return (!force && this.P_WORD.test(symbol))
-    ? symbol
-    : "'" + symbol.replace(/'/g, "\\'") + "'";
+
 };
 
 const accessor = function(symbol) {

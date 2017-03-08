@@ -1,0 +1,78 @@
+name: Nunjucks (noop)
+
+tests:
+
+  - name: 'output expressions'
+    preserves:
+      - "foo {{ bar }} baz"
+      - "foo {{ bar }} baz {{ qux[0] }}"
+      - "foo {{ bar['baz qux'][1].x }}"
+
+  - name: 'filter tags'
+    preserves:
+      - "foo {{ bar | qux }} baz"
+      - "foo {{ bar | qux(1) }} baz"
+      - "foo {{ bar | qux(1, 'quux', bar.baz[0]) }} baz"
+
+  - name: 'for..in loops'
+    preserves:
+      - "{% for x in items %}la {{ x[0] }}{% endfor %}"
+      - "{% for x in items.x['foo bar'].qux %}la {{ x[0] }}{% endfor %}"
+
+  - name: 'if conditionals'
+    preserves:
+      - "{% if z %}yes{% endif %}"
+      - "{% if z == 'bar' %}yes{% endif %}"
+      - "{% if z %}yes{% else %}no{% endif %}"
+      # - "{% if z %}yes{% elseif y %}maybe{% else %}no{% endif %}"
+      - "{% if z %}yes{% else %}{% if y %}maybe{% else %}no{% endif %}{% endif %}"
+      - "{% if not foo %}yes{% endif %}"
+
+  - name: 'literals'
+    tests:
+      - name: 'does not quote true, false, or null'
+        preserves:
+          - '{{ true }}'
+          - '{{ false }}'
+          - '{{ null }}'
+
+  - name: 'operators'
+    tests:
+      - name: 'add'
+        preserves:
+          - '{{ foo + bar }}'
+          - '{{ foo + 1 }}'
+          - '{{ foo + 1 + bar }}'
+          - "{{ foo + 'bar' }}"
+
+      - name: 'subtract'
+        preserves:
+          - '{{ foo - bar }}'
+          - "{{ foo - 1 }}"
+
+      - name: 'multiply'
+        preserves:
+          - '{{ x * 2 }}'
+          - '{{ x * y * 2 }}'
+
+      - name: 'divide'
+        preserves:
+          - '{{ x / 2 }}'
+          - '{{ x / y }}'
+
+      - name: 'mixed operators'
+        preserves:
+          - '{{ foo + bar - 1 }}'
+          - '{{ foo / bar + 2 }}'
+          - '{{ foo / bar * 2 - 1 }}'
+
+      - name: 'parenthesis grouping'
+        preserves:
+          - '{{ foo + (bar + 1) }}'
+          - '{{ foo / (bar + 1) }}'
+
+  - name: 'include nodes'
+    preserves:
+      - "{% include 'foo' %}"
+      - "{% include foo.bar %}"
+      - "{% include foo + '.html' %}"
