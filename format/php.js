@@ -1,7 +1,10 @@
 'use strict';
+const invariant = require('invariant');
 const formatFactory = require('./factory');
 const abs = require('./abstract');
 const ast = require('../ast');
+
+const NULL = 'null';
 
 const If = function(node) {
   const parts = [
@@ -47,17 +50,26 @@ const For = function(node) {
   ]).join('');
 };
 
-const Symbol = function(node, variable) {
-  return variable === false
-    ? node.value
-    : this.VAR_PREFIX + node.value;
+const isFunctionName = (node) => {
+  const parent = node.parent
+  return parent &&
+    ast.getNodeType(parent) === 'Filter' &&
+    parent.name === node;
+};
+
+const Symbol = function(node) {
+  const value = node.value;
+  return isFunctionName(node) || value === NULL
+    ? abs.Symbol.call(this, node)
+    : this.VAR_PREFIX + value;
 };
 
 const Filter = function(node) {
   // XXX: render as a Call expression?
   const args = node.args.children;
+  const type = ast.getNodeType(node.name);
   return [
-    this.Symbol(node.name, false),
+    this.node(node.name),
     '(',
     args.map(arg => this.node(arg)).join(', '),
     ')'
@@ -84,6 +96,10 @@ module.exports = formatFactory({
 
   quote:        abs.quote,
   accessor:     accessor,
+
+  literalAliases: {
+    'null': 'NULL',
+  },
 
   Add:          abs.Operator('+'),
   Compare:      abs.Compare,
