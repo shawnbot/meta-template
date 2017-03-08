@@ -67,13 +67,44 @@ const Symbol = function(node) {
 const Filter = function(node) {
   // XXX: render as a Call expression?
   const args = node.args.children;
-  const type = ast.getNodeType(node.name);
+
+  let name = node.name.value;
+  const builtin = this.builtinFilters[name];
+  if (builtin && builtin !== true) {
+    name = builtin;
+  }
+
   return [
-    this.node(node.name),
+    name,
     '(',
     args.map(arg => this.node(arg)).join(', '),
     ')'
   ].join('');
+};
+
+const Set = function(node) {
+  invariant(node.targets.length === 1,
+            'PHP does not support setting > 1 variable at a time');
+  if (node.body) {
+    return [
+      this.C_OPEN, this.WS,
+      'ob_start(PHP_OUTPUT_HANDLER_FLUSHABLE);',
+      this.WS, this.C_CLOSE,
+      this.node(node.body.body),
+      this.C_OPEN, this.WS,
+      this.Symbol(node.targets[0]), this.WS,
+      '=', this.WS, 'ob_get_flush();', this.WS,
+      this.C_CLOSE
+    ].join('');
+  } else {
+    return [
+      this.C_OPEN, this.WS,
+      this.Symbol(node.targets[0]), this.WS,
+      '=', this.WS,
+      this.node(node.value), ';', this.WS,
+      this.C_CLOSE
+    ].join('');
+  }
 };
 
 const accessor = function(symbol) {
@@ -94,12 +125,20 @@ module.exports = formatFactory({
   P_NUMERIC:    abs.P_NUMERIC,
   P_WORD:       abs.P_WORD,
 
-  quote:        abs.quote,
-  accessor:     accessor,
+  builtinFilters: {
+    'striptags':  'strip_tags',
+    'urlencode':  true,
+    'upper':      'strtoupper',
+    'lower':      'strtolower',
+    'nl2br':      true,
+  },
 
   literalAliases: {
     'null': 'NULL',
   },
+
+  quote:        abs.quote,
+  accessor:     accessor,
 
   Add:          abs.Operator('+'),
   Compare:      abs.Compare,
@@ -113,6 +152,7 @@ module.exports = formatFactory({
   NodeList:     abs.NodeList,
   Output:       abs.Output,
   Root:         abs.NodeList,
+  Set:          Set,
   Sub:          abs.Operator('-'),
   Symbol:       Symbol,
   TemplateData: abs.TemplateData

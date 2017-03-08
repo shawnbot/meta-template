@@ -92,25 +92,33 @@ tests:
           to:   '<?= $x == NULL ?>'
 
   - name: 'builtin filter name aliases'
-    pending: true
     converts:
-      '{{ x | striptags }}': '{{ x | strip_html }}'
-      '{{ x | urlencode }}': '{{ x | url_encode }}'
-      '{{ x | upper }}': '{{ x | upcase }}'
-      '{{ x | lower }}': '{{ x | downcase }}'
-      '{{ x | title }}': '{{ x | capitalize }}'
-      '{{ x | nl2br }}': '{{ x | newline_to_br }}'
+      - from: '{{ x | striptags }}'
+        to:   '<?= strip_tags($x) ?>'
+      - from: '{{ x | urlencode }}'
+        to:   '<?= urlencode($x) ?>'
+      - from: '{{ x | upper }}'
+        to:   '<?= strtoupper($x) ?>'
+      - from: '{{ x | lower }}'
+        to:   '<?= strtolower($x) ?>'
+      - from: '{{ x | nl2br }}'
+        to:   '<?= nl2br($x) ?>'
+      - from: '{{ x | title }}'
+        pending: true
 
   - name: 'set node conversion'
-    pending: true
     tests:
 
       - name: 'subs set for assign'
         converts:
-          '{% set foo = 1 %}': '{% assign foo = 1 %}'
-          '{% set foo = x * 2 %}': '{% assign foo = x | times: 2 %}'
+          - from: '{% set foo = 1 %}'
+            to:   '<?php $foo = 1; ?>'
+          - from: '{% set foo = x * 2 %}'
+            to:   '<?php $foo = $x * 2; ?>'
 
       - name: 'uses capture when there is no assignment'
         converts:
-          '{% set foo %}1{% endset %}': '{% capture foo %}1{% endcapture %}'
-          '{% set foo %}{{ x * 2 }}{% endset %}': '{% capture foo %}{{ x | times: 2 }}{% endcapture %}'
+          - from: '{% set foo %}x{% endset %}'
+            to:   '<?php ob_start(PHP_OUTPUT_HANDLER_FLUSHABLE); ?>x<?php $foo = ob_get_flush(); ?>'
+          - from: '{% set foo %}x * 2 = {{ x * 2 }}{% endset %}'
+            to:   '<?php ob_start(PHP_OUTPUT_HANDLER_FLUSHABLE); ?>x * 2 = <?= $x * 2 ?><?php $foo = ob_get_flush(); ?>'
