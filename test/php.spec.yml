@@ -1,0 +1,111 @@
+name: PHP
+
+tests:
+
+  - name: 'formats output expressions'
+    converts:
+      - from: "foo {{ bar }} baz"
+        to:   "foo <?= $bar ?> baz"
+      - from: "foo {{ bar }} baz {{ qux[0] }}"
+        to:   "foo <?= $bar ?> baz <?= $qux[0] ?>"
+      - from: "foo {{ bar['baz qux'][1].x }}"
+        to:   "foo <?= $bar['baz qux'][1]['x'] ?>"
+
+  - name: 'formats filter tags'
+    converts:
+      - from: "foo {{ bar | qux }} baz"
+        to:   "foo <?= qux($bar) ?> baz"
+      - from: "foo {{ bar | qux(1) }} baz"
+        to:   "foo <?= qux($bar, 1) ?> baz"
+      - from: "foo {{ bar | qux(1, 'quux', bar.baz[0]) }} baz"
+        to:   "foo <?= qux($bar, 1, 'quux', $bar['baz'][0]) ?> baz"
+
+  - name: 'formats for..in loops'
+    converts:
+      - from: "{% for x in items %}la {{ x[0] }}{% endfor %}"
+        to:   "<?php foreach ($x in $items): ?>la <?= $x[0] ?><?php endforeach; ?>"
+      - from: "{% for x in items.x['foo bar'].qux %}la {{ x[0] }}{% endfor %}"
+        to:   "<?php foreach ($x in $items['x']['foo bar']['qux']): ?>la <?= $x[0] ?><?php endforeach; ?>"
+
+  - name: 'formats if conditionals'
+    converts:
+      - from: "{% if z %}yes{% endif %}"
+        to:   "<?php if ($z): ?>yes<?php endif; ?>"
+      - from: "{% if z == 'bar' %}yes{% endif %}"
+        to:   ""
+        pending: true
+      - from: "{% if z %}yes{% else %}no{% endif %}"
+        to:   ""
+        pending: true
+      - from: "{% if z %}yes{% elif y %}maybe{% else %}no{% endif %}"
+        to:   "{% if z %}yes{% else %}{% if y %}maybe{% else %}no{% endif %}{% endif %}"
+        pending: true
+
+  - name: 'simple operators'
+    pending: true
+    tests:
+
+    - name: 'add'
+      converts:
+        '{{ x + 1 }}': '{{ x | plus: 1 }}'
+        '{{ x + 1 + y }}': '{{ x | plus: 1 | plus: y }}'
+
+    - name: 'subtract'
+      converts:
+        '{{ x - 1 }}': '{{ x | minus: 1 }}'
+        '{{ x - y - 1 }}': '{{ x | minus: y | minus: 1 }}'
+
+    - name: 'multiply'
+      converts:
+        '{{ x * 2 }}': '{{ x | times: 2 }}'
+        '{{ x * y * 2 }}': '{{ x | times: y | times: 2 }}'
+
+    - name: 'divide'
+      converts:
+        '{{ x / 2 }}': '{{ x | divided_by: 2 }}'
+        '{{ x / y }}': '{{ x | divided_by: y }}'
+
+    - name: 'mixed operators'
+      converts:
+        '{{ x - 1 + y }}': '{{ x | minus: 1 | plus: y }}'
+        '{{ x / 2 + y }}': '{{ x | divided_by: 2 | plus: y }}'
+
+  - name: 'comparator conversion'
+    pending: true
+    tests:
+
+      - name: 'replaces === with =='
+        converts:
+          '{{ x === 1 }}': '{{ x == 1 }}'
+
+  - name: 'symbol aliases'
+    pending: true
+    tests:
+
+      - name: 'replaces null with nil'
+        converts:
+          '{{ x == null }}': '{{ x == nil }}'
+
+  - name: 'builtin filter name aliases'
+    pending: true
+    converts:
+      '{{ x | striptags }}': '{{ x | strip_html }}'
+      '{{ x | urlencode }}': '{{ x | url_encode }}'
+      '{{ x | upper }}': '{{ x | upcase }}'
+      '{{ x | lower }}': '{{ x | downcase }}'
+      '{{ x | title }}': '{{ x | capitalize }}'
+      '{{ x | nl2br }}': '{{ x | newline_to_br }}'
+
+  - name: 'set node conversion'
+    pending: true
+    tests:
+
+      - name: 'subs set for assign'
+        converts:
+          '{% set foo = 1 %}': '{% assign foo = 1 %}'
+          '{% set foo = x * 2 %}': '{% assign foo = x | times: 2 %}'
+
+      - name: 'uses capture when there is no assignment'
+        converts:
+          '{% set foo %}1{% endset %}': '{% capture foo %}1{% endcapture %}'
+          '{% set foo %}{{ x * 2 }}{% endset %}': '{% capture foo %}{{ x | times: 2 }}{% endcapture %}'
