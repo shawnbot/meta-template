@@ -34,11 +34,10 @@ tests:
       "{% if not foo %}yes{% endif %}": "<% if not foo %>yes<% end %>"
 
   - name: 'literals'
-    pending: true
     converts:
       "{{ true }}": "<%= true %>"
       "{{ false }}": "<%= false %>"
-      "{{ null }}": "<%= null %>"
+      "{{ null }}": "<%= nil %>"
 
   - name: 'operators'
     tests:
