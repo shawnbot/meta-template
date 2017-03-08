@@ -1,13 +1,39 @@
 #!/usr/bin/env node
 'use strict';
 
-const yargs = require('yargs');
-const options = yargs
-  .alias('c', 'clean')
+const yargs = require('yargs')
+  .usage('$0 [options] [template.njk]')
+  .describe('format', 'Set the output format (default: output AST as JSON)')
   .alias('f', 'format')
+  .describe('trim', 'Trim whitespace from input')
   .alias('t', 'trim')
+  .describe('verbose', 'Output verbose debugging info to stderr')
   .alias('v', 'verbose')
-  .argv;
+  .describe('clean', 'Remove line and column numbers from AST output')
+  .alias('c', 'clean')
+  .alias('h', 'help');
+
+const options = yargs.argv;
+
+if (options.help) {
+  yargs.showHelp();
+  const formats = [
+    'AST (Abstract Syntax Tree, JSON, default)',
+    'nunjucks',
+    'liquid',
+    'jekyll',
+    'jinja',
+    'handlebars',
+    'erb',
+    'php',
+  ];
+  const sep = '\n  - ';
+  process.stdout.write(
+    'Available output formats are: ' + sep + formats.join(sep) + '\n'
+  );
+  return;
+}
+
 const args = options._;
 
 const concat = require('concat-stream');
