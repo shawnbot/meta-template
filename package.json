@@ -4,6 +4,7 @@
   "description": "Transform Nunjucks templates into other formats",
   "main": "index.js",
   "scripts": {
+    "postinstall": "bundle",
     "test": "mocha test/**/*.spec.js",
     "build": "browserify src/bundle.js --debug -t [ babelify --presets [ es2015 ] ] | uglifyjs --source-map-inline | exorcist dist/meta-template.js.map > dist/meta-template.js"
   },

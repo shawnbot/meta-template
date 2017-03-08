@@ -1,2 +1,2 @@
 #!/bin/sh
-echo "${1}" | liquid "${2}"
+echo "${1}" | bundle exec liquid "${2}"
