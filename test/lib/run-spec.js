@@ -40,11 +40,10 @@ const runSpec = (filename, format) => {
   assert(Array.isArray(data.tests),
          'YAML data .tests should be an array');
 
-  beforeEach(function() {
-    this.format = format;
-  });
-
   describe(data.name, function() {
+    before(function() {
+      this.format = format;
+    });
     testAll(data.tests);
   });
 };
