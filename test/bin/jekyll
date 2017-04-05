@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+dir=.tmp/jekyll
+file=$dir/index.html
+mkdir -p $dir
+echo "${2}" | `npm bin`/json2yaml | perl -pe 's/^  //' > $file
+echo '---' >> $file
+echo "${1}" >> $file
+bundle exec jekyll build --source $dir --dest $dir/_site
+cat $dir/_site/index.html
