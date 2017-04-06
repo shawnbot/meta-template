@@ -73,6 +73,8 @@ const Root = function(node) {
 const Include = function(node) {
   const params = (node.parameters || [])
     .map(param => {
+      invariant(param.value,
+                'Include parameter has no value: ' + JSON.stringify(node));
       return [
         param.name.value,
         // XXX we may want to invariant() here to assert that
@@ -85,10 +87,17 @@ const Include = function(node) {
   return [
     this.C_OPEN, this.WS,
     this.K_INCLUDE, this.WS,
-    this.node(node.template), this.WS,
+    this.filename(node.template), this.WS,
     params, params ? this.WS : '',
     this.C_CLOSE
   ].join('');
+};
+
+const filename = function(node) {
+  if (node.type !== 'Literal') {
+    throw new Error("We don't support filename expressions yet!");
+  }
+  return node.value;
 };
 
 module.exports = liquid.extend({
@@ -101,6 +110,8 @@ module.exports = liquid.extend({
   }),
 
   BLOCK_VAR_PREFIX: 'block__',
+
+  filename: filename,
 
   Include:      Include,
   Root:         Root,
