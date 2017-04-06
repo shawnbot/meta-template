@@ -8,6 +8,7 @@ const parse = require('../parse');
 
 const FIXTURES = [
   'symbol',
+  'include',
 ];
 
 const FORMATS = [
@@ -44,16 +45,15 @@ const run = (fixture, format) => {
         data
       ], {
         encoding: 'utf-8',
+        cwd: fixturePath,
         stdio: ['pipe', 'pipe', process.stderr]
       });
       assert(render.stdout, 'No stdout from: ' + prog);
 
-      const expected = read(paths.expected);
+      const result = render.stdout.toString().trim();
+      const expected = read(paths.expected).toString().trim();
       assert(expected, 'No expected file read from: ' + paths.expected);
-      assert.equal(
-        render.stdout.toString().trim(),
-        expected.toString().trim()
-      );
+      assert.equal(result, expected);
 
       resolve();
     });
