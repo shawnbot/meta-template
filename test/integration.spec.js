@@ -14,6 +14,7 @@ const FORMATS = [
   'nunjucks',
   'handlebars',
   'liquid',
+  'jekyll',
 ];
 
 const FILES = {
