@@ -1,10 +1,25 @@
-#!/bin/sh
-set -e
-dir=.tmp/jekyll
-file=$dir/index.html
-mkdir -p $dir
-echo "${2}" | `npm bin`/json2yaml | perl -pe 's/^  //' > $file
-echo '---' >> $file
-echo "${1}" >> $file
-bundle exec jekyll build --source $dir --dest $dir/_site
-cat $dir/_site/index.html
+#!/usr/bin/env ruby
+require 'json'
+require 'liquid'
+require 'jekyll'
+require 'jekyll/liquid_extensions'
+
+module Liquid
+  class JekyllRenderer
+    include Jekyll::LiquidExtensions
+    attr_reader :template
+
+    def initialize(template)
+      @template = Template.parse(template)
+    end
+
+    def render(data)
+      context = JSON.parse(data)
+      template.render(context)
+    end
+  end
+end
+
+$stdout.write(
+  Liquid::JekyllRenderer.new(ARGV.first).render(ARGV[1] || '{}')
+)
