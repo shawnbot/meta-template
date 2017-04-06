@@ -13,9 +13,9 @@ module Liquid
       @template = Template.parse(template)
     end
 
-    def render(data)
-      context = JSON.parse(data)
-      template.render(context)
+    def render(input)
+      data = JSON.parse(input)
+      template.render(data)
     end
   end
 end
