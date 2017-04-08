@@ -1,4 +1,5 @@
 GEM
+  remote: https://rubygems.org/
   specs:
     liquid (3.0.6)
     liquid-cli (0.0.1)
@@ -11,4 +12,4 @@ DEPENDENCIES
   liquid-cli
 
 BUNDLED WITH
-   1.13.6
+   1.14.6
