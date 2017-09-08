@@ -30,7 +30,7 @@ At a high level, there are three steps in the template conversion process:
   ```
   
 1. Format the AST into a string with a function that declaratively handles
-   different types of AST "node" (`If`, `Oputput`, etc.), and automatically
+   different types of AST "node" (`If`, `Output`, etc.), and automatically
    throws errors for unsupported node types
    
   ```js
